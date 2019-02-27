@@ -89,7 +89,7 @@ for(i in c(1,2)){
       , legend.position = "bottom"
       , legend.margin = margin(20,0.5,0.5,0.5)
     )
-  ggsave(f, filename = plot_name,  bg = "transparent", path="/Users/UseNetID/Dropbox/MaIn/paper/figures")
+  ggsave(f, filename = plot_name,  bg = "transparent", path= here("output"))
 }
 ##############################################
 ##############################################
