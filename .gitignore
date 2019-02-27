@@ -3,3 +3,8 @@
 .RData
 .Ruserdata
 .DS_Store
+*.pper
+*.pper
+*.pper
+.Rhistory
+.DS_Store
