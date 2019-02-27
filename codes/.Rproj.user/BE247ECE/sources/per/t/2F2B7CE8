@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1551247861394.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1435184735",
+    "id" : "2F2B7CE8",
+    "lastKnownWriteTime" : 1550388946,
+    "last_content_update" : 1550388946,
+    "path" : "~/Dropbox/MaIn/analysis/ind_analysis_base.R",
+    "project_path" : "ind_analysis_base.R",
+    "properties" : {
+        "cursorPosition" : "163,87",
+        "scrollLine" : "154"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
