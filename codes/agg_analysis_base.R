@@ -124,7 +124,7 @@ f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name
     , legend.position = "bottom"
     , legend.margin = margin(20,0.5,0.5,0.5)
   )
-ggsave(f, filename = "bars_AvsB.png",  bg = "transparent", path="/Users/UseNetID/Dropbox/MaIn/paper/figures")
+ggsave(f, filename = "bars_AvsB.png",  bg = "transparent", path = here("output"))
 
 ##############################################
 ##############################################
@@ -137,7 +137,6 @@ test_data <- data_groups %>%
   
 diff = test_data$mean_choice[test_data$subsession.game_name=="A"]-test_data$mean_choice[test_data$subsession.game_name=="B"]
 test=wilcox.test(diff, alternative = "two.sided")
-#test=t.test(Z_base,Z_cond, alternative = "g")
 p=test$p.value
 pass=(p<=0.05)
 ##############################################
