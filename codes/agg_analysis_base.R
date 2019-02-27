@@ -1,5 +1,5 @@
 ##############################################
-#### ANALYSIS OF MEANS FROM BASE SESSIONS ####
+#### ANALYSIS OF MEANS FROM BASE SESSIONS #### TRYING GIT
 ##############################################
 #create group means datatset
 #two graphs: 1) bars with all means-of-means, 2) cdf of Hm_A and of Mm_A
