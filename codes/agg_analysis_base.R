@@ -16,16 +16,7 @@ library(forcats)
 ####################################
 #### CREATE GROUP MEANS DATASET ####
 ####################################
-#data_firstsession<-read_csv("/Users/UseNetID/Dropbox/MaIn/data/LINEEX_december2018/2018RJAMA0101_RawData_base_03122018/AcceptanceCurse_2018-12-03.csv")
-#data_secondsession<-read_csv("/Users/UseNetID/Dropbox/MaIn/data/LINEEX_december2018/2018RJAMA0104_RawData_base_04122018/AcceptanceCurse_2018-12-04.csv")
-#data_thirdsession<-read_csv("/Users/UseNetID/Dropbox/MaIn/data/LINEEX_december2018/2018RJAMA0107_RawData_base_04122018/AcceptanceCurse_2018-12-04.csv")
-#data_all_base <- data_firstsession %>%
-#  bind_rows(data_secondsession) %>%
-#  bind_rows(data_thirdsession)
-data_all_base <- read_csv(here("data","base.csv"))
-rm(data_firstsession)
-rm(data_secondsession)
-rm(data_thirdsession)
+data_all_base <- read_csv(here("data","MaIn_data_base_game.csv"))
 min_round <- 20
 max_round <- 60
 data_all_base <- mutate(data_all_base,round_ind = subsession.round_number>=min_round & subsession.round_number<=max_round)
