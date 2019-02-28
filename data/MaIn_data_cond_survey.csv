@@ -1,0 +1,49 @@
+participant.id_in_session,participant.code,participant.label,participant._is_bot,participant._index_in_pages,participant._max_page_index,participant._current_app_name,participant._round_number,participant._current_page_name,participant.ip_address,participant.time_started,participant.visited,participant.mturk_worker_id,participant.mturk_assignment_id,participant.payoff,player.id_in_group,player.sex,player.major,player.payoff,group.id_in_subsession,subsession.round_number,session.code,session.label,session.experimenter_name,session.mturk_HITId,session.mturk_HITGroupId,session.comment,session.is_demo
+1,3ppm4e1v,,0,452,452,finalpage,1,MyPage,147.156.150.6,2018-12-03 14:34:42.099996+00:00,1,,,80,1,Female,Social sciences,0,1,1,ygals5dn,,,,,,0
+2,h21nu1sp,,0,452,452,finalpage,1,MyPage,147.156.150.10,2018-12-03 14:34:53.964132+00:00,1,,,30,2,Male,"Science, technology, engineering and mathematics",0,1,1,ygals5dn,,,,,,0
+3,0omijf58,,0,452,452,finalpage,1,MyPage,147.156.150.12,2018-12-03 14:35:04.829010+00:00,1,,,170,3,Female,"Science, technology, engineering and mathematics",0,1,1,ygals5dn,,,,,,0
+4,gxuhsafv,,0,452,452,finalpage,1,MyPage,147.156.150.14,2018-12-03 14:35:15.611464+00:00,1,,,89,4,Male,Social sciences,0,1,1,ygals5dn,,,,,,0
+5,i2f1cjde,,0,452,452,finalpage,1,MyPage,147.156.150.15,2018-12-03 14:35:32.676756+00:00,1,,,110,5,Male,Social sciences,0,1,1,ygals5dn,,,,,,0
+6,myiarxor,,0,452,452,finalpage,1,MyPage,147.156.150.17,2018-12-03 14:35:43.999671+00:00,1,,,86,6,Female,Social sciences,0,1,1,ygals5dn,,,,,,0
+7,zki2cy4x,,0,452,452,finalpage,1,MyPage,147.156.150.19,2018-12-03 14:35:55.567407+00:00,1,,,90,7,Male,Social sciences,0,1,1,ygals5dn,,,,,,0
+8,nugwba4k,,0,452,452,finalpage,1,MyPage,147.156.150.25,2018-12-03 14:36:08.987614+00:00,1,,,85,8,Female,"Science, technology, engineering and mathematics",0,1,1,ygals5dn,,,,,,0
+9,hpovgepz,,0,452,452,finalpage,1,MyPage,147.156.150.33,2018-12-03 14:36:26.738461+00:00,1,,,80,9,Female,Social sciences,0,1,1,ygals5dn,,,,,,0
+10,p07yh7x8,,0,452,452,finalpage,1,MyPage,147.156.150.22,2018-12-03 14:36:36.484163+00:00,1,,,81,10,Male,Social sciences,0,1,1,ygals5dn,,,,,,0
+11,uz3gximg,,0,452,452,finalpage,1,MyPage,147.156.150.32,2018-12-03 14:36:48.187114+00:00,1,,,46,11,Female,Social sciences,0,1,1,ygals5dn,,,,,,0
+12,q506jdnz,,0,452,452,finalpage,1,MyPage,147.156.150.23,2018-12-03 14:36:59.021573+00:00,1,,,36,12,Male,"Science, technology, engineering and mathematics",0,1,1,ygals5dn,,,,,,0
+13,rhyq1d13,,0,452,452,finalpage,1,MyPage,147.156.150.26,2018-12-03 14:37:17.088710+00:00,1,,,81,13,Female,"Science, technology, engineering and mathematics",0,1,1,ygals5dn,,,,,,0
+14,7m8jmexy,,0,452,452,finalpage,1,MyPage,147.156.150.37,2018-12-03 14:37:28.872853+00:00,1,,,78,14,Female,Social sciences,0,1,1,ygals5dn,,,,,,0
+15,jsucudxr,,0,452,452,finalpage,1,MyPage,147.156.150.27,2018-12-03 14:37:42.156372+00:00,1,,,81,15,Female,Art and humanities,0,1,1,ygals5dn,,,,,,0
+16,0o9yx4hf,,0,452,452,finalpage,1,MyPage,147.156.150.38,2018-12-03 14:37:52.715920+00:00,1,,,86,16,Female,"Science, technology, engineering and mathematics",0,1,1,ygals5dn,,,,,,0
+1,4fmpc79a,,0,452,452,finalpage,1,MyPage,147.156.150.6,2018-12-04 14:03:32.483932+00:00,1,,,94,1,Male,"Science, technology, engineering and mathematics",0,1,1,ot9rx6h1,,,,,,0
+2,qfee7sai,,0,452,452,finalpage,1,MyPage,147.156.150.10,2018-12-04 14:03:46.602302+00:00,1,,,89,2,Male,Social sciences,0,1,1,ot9rx6h1,,,,,,0
+3,zj36mnti,,0,452,452,finalpage,1,MyPage,147.156.150.12,2018-12-04 14:03:58.250493+00:00,1,,,94,3,Female,"Science, technology, engineering and mathematics",0,1,1,ot9rx6h1,,,,,,0
+4,u6albs1t,,0,452,452,finalpage,1,MyPage,147.156.150.14,2018-12-04 14:04:09.012759+00:00,1,,,94,4,Male,"Science, technology, engineering and mathematics",0,1,1,ot9rx6h1,,,,,,0
+5,d222nakj,,0,452,452,finalpage,1,MyPage,147.156.150.15,2018-12-04 14:04:30.549468+00:00,1,,,167,5,Male,"Science, technology, engineering and mathematics",0,1,1,ot9rx6h1,,,,,,0
+6,8a90yxxd,,0,452,452,finalpage,1,MyPage,147.156.150.17,2018-12-04 14:04:43.483606+00:00,1,,,90,6,Female,Social sciences,0,1,1,ot9rx6h1,,,,,,0
+7,jq1ytb02,,0,452,452,finalpage,1,MyPage,147.156.150.19,2018-12-04 14:04:55.035523+00:00,1,,,174,7,Female,"Science, technology, engineering and mathematics",0,1,1,ot9rx6h1,,,,,,0
+8,0oiq7i2j,,0,452,452,finalpage,1,MyPage,147.156.150.25,2018-12-04 14:05:07.919879+00:00,1,,,94,8,Female,"Science, technology, engineering and mathematics",0,1,1,ot9rx6h1,,,,,,0
+9,wrymb21s,,0,452,452,finalpage,1,MyPage,147.156.150.33,2018-12-04 14:05:28.424035+00:00,1,,,170,9,Female,Social sciences,0,1,1,ot9rx6h1,,,,,,0
+10,05m90dto,,0,452,452,finalpage,1,MyPage,147.156.150.22,2018-12-04 14:05:41.441488+00:00,1,,,90,10,Female,Social sciences,0,1,1,ot9rx6h1,,,,,,0
+11,rrukny5r,,0,452,452,finalpage,1,MyPage,147.156.150.32,2018-12-04 14:05:55.649130+00:00,1,,,91,11,Male,"Science, technology, engineering and mathematics",0,1,1,ot9rx6h1,,,,,,0
+12,h743g0n8,,0,452,452,finalpage,1,MyPage,147.156.150.23,2018-12-04 14:06:08.000585+00:00,1,,,96,12,Female,"Science, technology, engineering and mathematics",0,1,1,ot9rx6h1,,,,,,0
+13,fcaa921v,,0,452,452,finalpage,1,MyPage,147.156.150.26,2018-12-04 14:06:31.792269+00:00,1,,,87,13,Female,Social sciences,0,1,1,ot9rx6h1,,,,,,0
+14,shyjrsz3,,0,452,452,finalpage,1,MyPage,147.156.150.37,2018-12-04 14:06:43.724988+00:00,1,,,167,14,Male,Social sciences,0,1,1,ot9rx6h1,,,,,,0
+15,k6k7aywb,,0,452,452,finalpage,1,MyPage,147.156.150.27,2018-12-04 14:06:55.249046+00:00,1,,,90,15,Male,"Science, technology, engineering and mathematics",0,1,1,ot9rx6h1,,,,,,0
+16,95lz3w9s,,0,452,452,finalpage,1,MyPage,147.156.150.38,2018-12-04 14:07:06.333438+00:00,1,,,105,16,Female,Social sciences,0,1,1,ot9rx6h1,,,,,,0
+1,qgxigre0,,0,452,452,finalpage,1,MyPage,147.156.150.6,2018-12-05 11:07:40.594059+00:00,1,,,50,1,Female,"Science, technology, engineering and mathematics",0,1,1,4g73qpot,,,,,,0
+2,hbcrowe5,,0,452,452,finalpage,1,MyPage,147.156.150.10,2018-12-05 11:07:53.491085+00:00,1,,,92,2,Male,"Science, technology, engineering and mathematics",0,1,1,4g73qpot,,,,,,0
+3,k1wwkmnt,,0,452,452,finalpage,1,MyPage,147.156.150.12,2018-12-05 11:08:07.423040+00:00,1,,,88,3,Female,Social sciences,0,1,1,4g73qpot,,,,,,0
+4,apxbd4nx,,0,452,452,finalpage,1,MyPage,147.156.150.14,2018-12-05 11:08:21.919780+00:00,1,,,37,4,Male,"Science, technology, engineering and mathematics",0,1,1,4g73qpot,,,,,,0
+5,1tjvxrlx,,0,452,452,finalpage,1,MyPage,147.156.150.15,2018-12-05 11:08:42.932420+00:00,1,,,86,5,Male,Social sciences,0,1,1,4g73qpot,,,,,,0
+6,ms43ruid,,0,452,452,finalpage,1,MyPage,147.156.150.17,2018-12-05 11:08:56.252590+00:00,1,,,90,6,Male,Social sciences,0,1,1,4g73qpot,,,,,,0
+7,2ijyi1ok,,0,452,452,finalpage,1,MyPage,147.156.150.19,2018-12-05 11:09:07.739922+00:00,1,,,84,7,Female,"Science, technology, engineering and mathematics",0,1,1,4g73qpot,,,,,,0
+8,qpzo2cfl,,0,452,452,finalpage,1,MyPage,147.156.150.25,2018-12-05 11:09:20.826256+00:00,1,,,170,8,Female,"Science, technology, engineering and mathematics",0,1,1,4g73qpot,,,,,,0
+9,eksgq1t0,,0,452,452,finalpage,1,MyPage,147.156.150.33,2018-12-05 11:10:16.745777+00:00,1,,,94,9,Female,"Science, technology, engineering and mathematics",0,1,1,4g73qpot,,,,,,0
+10,xvhkba10,,0,452,452,finalpage,1,MyPage,147.156.150.22,2018-12-05 11:10:29.708585+00:00,1,,,94,10,Male,Art and humanities,0,1,1,4g73qpot,,,,,,0
+11,763ibib9,,0,452,452,finalpage,1,MyPage,147.156.150.32,2018-12-05 11:10:43.465299+00:00,1,,,34,11,Male,"Science, technology, engineering and mathematics",0,1,1,4g73qpot,,,,,,0
+12,hqs28u6y,,0,452,452,finalpage,1,MyPage,147.156.150.23,2018-12-05 11:10:55.491566+00:00,1,,,89,12,Male,Social sciences,0,1,1,4g73qpot,,,,,,0
+13,nj1ksdyf,,0,452,452,finalpage,1,MyPage,147.156.150.26,2018-12-05 11:11:16.823051+00:00,1,,,37,13,Male,"Science, technology, engineering and mathematics",0,1,1,4g73qpot,,,,,,0
+14,beivoyb6,,0,452,452,finalpage,1,MyPage,147.156.150.37,2018-12-05 11:11:29.968654+00:00,1,,,92,14,Male,"Science, technology, engineering and mathematics",0,1,1,4g73qpot,,,,,,0
+15,7vhw9te4,,0,452,452,finalpage,1,MyPage,147.156.150.27,2018-12-05 11:11:45.349226+00:00,1,,,91,15,Male,"Science, technology, engineering and mathematics",0,1,1,4g73qpot,,,,,,0
+16,b58p8y1w,,0,452,452,finalpage,1,MyPage,147.156.150.38,2018-12-05 11:11:59.284562+00:00,1,,,87,16,Male,"Science, technology, engineering and mathematics",0,1,1,4g73qpot,,,,,,0
