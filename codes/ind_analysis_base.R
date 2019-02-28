@@ -1,7 +1,7 @@
 ####################################
 #### PRELIMINARIES ####
 ####################################
-rm(list=ls())
+library(here)
 library(tidyverse)
 library(forcats)
 ##############################################
@@ -51,7 +51,7 @@ path_data_survey = paste(root,
                          ".csv",
                          sep="")
 ### EDIT GAME DATA ###
-data_game_raw<-read_csv(path_data_game)
+data_game_raw<-read_csv(here("data","MaIn_data_base_game.csv"))
 data_game_raw <- data_game_raw %>%
   mutate(player.type=factor(player.type)) %>%
   mutate(player.type=fct_recode(player.type,
@@ -79,19 +79,19 @@ data_game <- data_game_raw %>%
   filter(player.signal=="m")
 ######################
 ### EDIT MPL DATA ###
-data_mpl<-read_csv(path_data_mpl)
+data_mpl<-read_csv(here("data","MaIn_data_base_mpl.csv"))
 data_mpl <- data_mpl %>%
   mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
   select(participant.id_in_treatment, player.switching_row)
 ######################
 ### EDIT CRT DATA ###
-data_crt<-read_csv(path_data_crt)
+data_crt<-read_csv(here("data","MaIn_data_base_crt.csv"))
 data_crt <- data_crt %>%
   mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
   select(participant.id_in_treatment, player.num_correct)
 ######################
 ### EDIT SURVEY DATA ###
-data_survey<-read_csv(path_data_survey)
+data_survey<-read_csv(here("data","MaIn_data_base_survey.csv"))
 data_survey <- data_survey %>%
   mutate(player.sex=factor(player.sex)) %>%
   mutate(player.major=factor(player.major)) %>%
