@@ -1,35 +1,58 @@
-
+#########################################
 ### PLOTS COMPARATIVE STATICS OF CQRE ###
+#########################################
 
-
-rm(list=ls())
-source('solve_qre.R')
-source('qre_distance.R')
-source('exp_match_pay.R')
-library("ggplot2")
+##################################
+### PRELIMINARIES ################
+##################################
 library(tidyverse)
 library(forcats)
 library(latex2exp)
+library(here)
+library(ggplot2)
+source(here("codes","solve_qre.R"))
+source(here("codes","qre_distance.R"))
+source(here("codes","exp_match_pay.R"))
+##################################
+##################################
 
-
+##################################
+####### FIXED PARAMETERS #########
+##################################
 m=c(160,80,40)
-r=c(NA,75,25)
+r=c(NA,75,25) #first entry will be set depending on game
 M=matrix(rep(m,3),nrow = 3,ncol = 3,byrow = TRUE)
 D=matrix(c(0.5,0.5,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
+##################################
+##################################
 
-
+#####################################
+####### SET PARAMETER SPACE #########
+#####################################
 game_set=c("A","B")
 type_set=c("H","M")
 lambda_set=c(0.05,0.10,0.15)
 chi_set=seq(0,1,0.02)
 N=length(game_set)*length(type_set)*length(lambda_set)*length(chi_set)
+offset=length(game_set)*length(lambda_set)*length(chi_set)
+##################################
+##################################
+
+##################################
+####### INITIALIZE #########
+##################################
 SIGMA=rep(0,N)
 TYPE=rep(0,N)
 GAME=rep(0,N)
 LAMBDA=rep(0,N)
 CHI=rep(0,N)
 i=0
-offset=length(game_set)*length(lambda_set)*length(chi_set)
+##################################
+##################################
+
+##################################
+####### SOLVE MODEL #########
+##################################
 for(game in game_set){
   if(game=="A"){r[1]=100}
   if(game=="B"){r[1]=80}
@@ -52,17 +75,26 @@ for(game in game_set){
     }
   }
 }
-plot_data <- data.frame(SIGMA, TYPE, GAME, LAMBDA, CHI)
+##################################
+##################################
 
+##################################
+####### STORE DATA #########
+##################################
+plot_data <- data.frame(SIGMA, TYPE, GAME, LAMBDA, CHI)
 plot_data_high <- plot_data %>%
   filter(LAMBDA==0.15)
 plot_data_low <- plot_data %>%
   filter(LAMBDA==0.05)
 plot_data_medium <- plot_data %>%
   filter(LAMBDA==0.10)
+##################################
+##################################
 
+##################################
+####### PLOTS #########
+##################################
 scale=1.2
-
 for(plot_id in seq(1,length(lambda_set))){
   if(plot_id==1){
     plot_data=plot_data_high
@@ -100,5 +132,7 @@ for(plot_id in seq(1,length(lambda_set))){
       , legend.key.size = unit(1*scale, "cm")
       , legend.position = "bottom"
     )
-  ggsave(f, filename = plot_name,  bg = "transparent", path="/Users/UseNetID/Dropbox/MaIn/paper/figures")
+  ggsave(f, filename = plot_name,  bg = "transparent", path= here("output"))
 }
+##################################
+##################################
