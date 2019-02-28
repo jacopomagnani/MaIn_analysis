@@ -7,7 +7,7 @@
 ####################################
 #### PRELIMINARIES ####
 ####################################
-rm(list=ls())
+library(here)
 library(tidyverse)
 library(forcats)
 library(latex2exp)
@@ -18,7 +18,7 @@ library(latex2exp)
 ####################################
 #### CREATE GROUP MEANS DATASET ####
 ####################################
-data_raw<-read_csv("/Users/UseNetID/Dropbox/MaIn/data/LINEEX_december2018/2018RJAMA0108_RawData_bel_05122018/AcceptanceCurse_2018-12-05.csv")
+data_raw<-read_csv(here("data","MaIn_data_bel_game.csv"))
 min_round <- 20
 max_round <- 60
 data_bel <- data_raw %>%
@@ -38,7 +38,7 @@ data_bel <- data_raw %>%
   group_by(game) %>%
   summarise(mean = mean(player.choice))
 
-data_raw<-read_csv("/Users/UseNetID/Dropbox/MaIn/data/LINEEX_december2018/2018RJAMA0109_RawData_comp_05122018/AcceptanceCurse_2018-12-05.csv")
+data_raw<-read_csv(here("data","MaIn_data_cond_game.csv"))
 min_round <- 20
 max_round <- 60
 data_cond <- data_raw %>%
@@ -102,5 +102,5 @@ f<-ggplot(data = data_plot, aes(x=game,
   scale_x_discrete(breaks=c("A", "B", "C","D","E"),
                      labels=c("1", "0.75", "0.5","0.25","0"))+
   geom_hline(aes(yintercept=0.66), colour="black", linetype="dashed")
-ggsave(f, filename = "Bel_Cond.png",  bg = "transparent", path="/Users/UseNetID/Dropbox/MaIn/paper/figures")
+ggsave(f, filename = "Bel_Cond.png",  bg = "transparent", path=here("output"))
 
