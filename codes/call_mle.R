@@ -6,17 +6,18 @@
 ##################################
 ### PRELIMINARIES ################
 ##################################
-rm(list=ls())
-source('solve_qre.R')
-source('qre_distance.R')
-source('exp_match_pay.R')
-source('likelihood_BASE.R')
-source('likelihood_BEL.R')
-source('likelihood_COND.R')
-source('likelihood_joint.R')
 library(tidyverse)
 library(forcats)
 library(bbmle)
+library(here)
+source(here("codes","solve_qre.R"))
+source(here("codes","qre_distance.R"))
+source(here("codes","exp_match_pay.R"))
+source(here("codes","likelihood_BASE.R"))
+source(here("codes","likelihood_BEL.R"))
+source(here("codes","likelihood_COND.R"))
+source(here("codes","likelihood_joint.R"))
+source(here("codes","likelihood_joint_restricted.R"))
 ##################################
 ##################################
 
@@ -26,7 +27,7 @@ library(bbmle)
 min_round <- 1
 max_round <- 60
 
-raw_data<-read_csv("/Users/UseNetID/Dropbox/MaIn/data/LINEEX_december2018/2018RJAMA0107_RawData_base_04122018/AcceptanceCurse_2018-12-04.csv")
+raw_data<-read_csv(here("data","MaIn_data_base_game.csv"))
 mle_data_BASE <- raw_data %>% 
   filter(subsession.round_number>=min_round & subsession.round_number<=max_round) %>%
   mutate(treatment=rep("BASE",length(player.choice)),
@@ -37,7 +38,7 @@ mle_data_BASE <- raw_data %>%
   select(treatment,propose,type,signal,game)
 rm(raw_data)
 
-raw_data<-read_csv("/Users/UseNetID/Dropbox/MaIn/data/LINEEX_december2018/2018RJAMA0108_RawData_bel_05122018/AcceptanceCurse_2018-12-05.csv")
+raw_data<-read_csv(here("data","MaIn_data_bel_game.csv"))
 mle_data_BEL <- raw_data %>%
   filter(player.status==0) %>%
   filter(subsession.round_number>=min_round & subsession.round_number<=max_round) %>%
@@ -55,7 +56,7 @@ mle_data_BEL <- raw_data %>%
 rm(raw_data)
 
 
-raw_data<-read_csv("/Users/UseNetID/Dropbox/MaIn/data/LINEEX_december2018/2018RJAMA0109_RawData_comp_05122018/AcceptanceCurse_2018-12-05.csv")
+raw_data<-read_csv(here("data","MaIn_data_cond_game.csv"))
 mle_data_COND <- raw_data %>%
   filter(player.status==0) %>%
   filter(subsession.round_number>=min_round & subsession.round_number<=max_round) %>%
@@ -134,7 +135,6 @@ NLL_joint=mle_results_joint@details$objective
 rm(mle_results_joint)
 
 #test chi_BASE>chi_BEL
-source("likelihood_joint_restricted.R")
 mle_results_joint_restricted <- mle2(minuslogl = likelihood_joint_restricted,
                           start = list(lambda=0.1, chi=0.5),
                           optimizer="nlminb", #NOTE: R will crash with default "optim"
