@@ -127,9 +127,9 @@ ggsave(f, filename = "bars_AvsB.png",  bg = "transparent", path = here("output")
 ##############################################
 ##############################################
 
-#########################
-#### HYPOTHESIS TEST ####
-#########################
+##############################################################
+#### TEST DIFFERENCE IN Mm PROPOSAL RATES BETWEEN A and B ####
+##############################################################
 test_data <- data_groups %>%
   filter(player.signal=="m" & player.type=="M"  & player.type!="L") 
   
@@ -137,5 +137,25 @@ diff = test_data$mean_choice[test_data$subsession.game_name=="A"]-test_data$mean
 test=wilcox.test(diff, alternative = "two.sided")
 p=test$p.value
 pass=(p<=0.05)
+##############################################
+##############################################
+
+#######################################################################
+#### COMPUTE MEAN POINTS AND PARTNER TYPES FOR Mm REALIZED MATCHES ####
+#######################################################################
+data_all_base <- data_all_base %>%
+  mutate(player.partner_type=factor(player.partner_type)) %>%
+  mutate(player.partner_type=fct_recode(player.partner_type,
+                                        "H"="1",
+                                        "M"="2",
+                                        "L"="3"))
+data_all_base %>%
+  filter(player.type=="M" & player.signal=="m" & player.match==1) %>%
+  group_by(subsession.game_name) %>%
+  summarise(mean_points=mean(player.points),
+            share_H=mean(player.partner_type=="H"),
+            share_M=mean(player.partner_type=="M"),
+            share_L=mean(player.partner_type=="L")
+  )
 ##############################################
 ##############################################
