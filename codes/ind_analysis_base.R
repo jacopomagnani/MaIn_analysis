@@ -1,3 +1,7 @@
+###################################################################
+#### ANALYSIS OF INDIVIDUAL CHARACTERISTICS FROM BASE SESSIONS ####
+###################################################################
+
 ####################################
 #### PRELIMINARIES ####
 ####################################
@@ -6,50 +10,10 @@ library(tidyverse)
 library(forcats)
 ##############################################
 ##############################################
+
 ####################################
 #### CREATE DATASET ####
 ####################################
-####### ISSUE !!!! THE THIRD DATASET ALREADY CONTAINS THE PREVIOUS TWO !!! #############
-data_treatment <- c()
-num_sessions = 3
-list_session_number=c("01", "04", "07")
-list_session_day=c("03", "04", "04")
-root = "/Users/UseNetID/Dropbox/MaIn/data/LINEEX_december2018/2018RJAMA01"
-i=3
-session_number=list_session_number[i]
-session_day=list_session_day[i]
-path_data_game = paste(root,
-                       session_number,
-                       "_RawData_base_",
-                       session_day,
-                       "122018/AcceptanceCurse_2018-12-",
-                       session_day,
-                       ".csv",
-                       sep="")
-path_data_mpl = paste(root,
-                      session_number,
-                      "_RawData_base_",
-                      session_day,
-                      "122018/mpl_2018-12-",
-                      session_day,
-                      ".csv",
-                      sep="")
-path_data_crt = paste(root,
-                      session_number,
-                      "_RawData_base_",
-                      session_day,
-                      "122018/crt_2018-12-",
-                      session_day,
-                      ".csv",
-                      sep="")
-path_data_survey = paste(root,
-                         session_number,
-                         "_RawData_base_",
-                         session_day,
-                         "122018/survey_2018-12-",
-                         session_day,
-                         ".csv",
-                         sep="")
 ### EDIT GAME DATA ###
 data_game_raw<-read_csv(here("data","MaIn_data_base_game.csv"))
 data_game_raw <- data_game_raw %>%
@@ -112,7 +76,7 @@ rm(list=c("data_game", "data_mpl", "data_crt", "data_survey"))
 
 
 ####################################
-#### BETWEEN REGRESSION ####
+#### REGRESSION ####
 ####################################
 data_reg <- data_treatment
 reg1 <- glm(formula = player.choice ~
@@ -134,12 +98,12 @@ summary(reg1)
 ##############################################
 
 ####################################
-#### BAR PLOTS ####
+#### BAR PLOTS FOR SUBSAMPLES ####
 ####################################
+
+### SUBSAMPLE OF LATE ROUNDS ###
 plot_data <- data_treatment %>%
-  #filter(player.crt_score >=2) %>%
   filter(subsession.round_number >=45) %>%
-  #filter(player.sex=="Female") %>%
   group_by(player.type,
            subsession.game_name
   ) %>%
@@ -170,5 +134,42 @@ f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name
     , legend.position = "bottom"
     , legend.margin = margin(20,0.5,0.5,0.5)
   )
-#ggsave(f, filename = "bars_AvsB_highCRT.png",  bg = "transparent", path="/Users/UseNetID/Dropbox/MaIn/paper/figures")
-ggsave(f, filename = "bars_AvsB_learnt.png",  bg = "transparent", path="/Users/UseNetID/Dropbox/MaIn/paper/figures")
+ggsave(f, filename = "bars_AvsB_learnt.png",  bg = "transparent", path=here("output"))
+##############
+### SUBSAMPLE OF HIGH CRT SUBJS ###
+plot_data <- data_treatment %>%
+  filter(player.crt_score >=2) %>%
+  group_by(player.type,
+           subsession.game_name
+  ) %>%
+  summarise(mean = mean(player.choice))
+scale=1.2
+f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name)) +
+  geom_bar(stat="identity", position=position_dodge(), colour="black", width = 0.5) +
+  scale_fill_manual(name  ="Game    ",
+                    values=c( "A"="white", "B"="grey"),
+                    labels=c(" A  ", " B  ")) +
+  ylab("Proposal rate") +
+  xlab("Quality") +
+  ylim(0,1) +
+  theme(axis.title.y = element_text(size=16*scale)) +
+  theme(axis.title.x = element_text(size=16*scale)) +
+  theme(axis.text.x  = element_text(size=16*scale)) +
+  theme(axis.text.y  = element_text(size=16*scale)) +
+  theme(legend.text = element_text(size = 16*scale),
+        legend.title = element_text(size=16*scale)) +
+  theme(
+    panel.background = element_rect(fill = "transparent") # bg of the panel
+    , plot.background = element_rect(fill = "transparent", color = NA) # bg of the plot
+    , panel.grid.major = element_line(colour = "grey") # get rid of major grid
+    , panel.grid.minor = element_line(colour = "grey") # get rid of minor grid
+    , legend.background = element_rect(fill = "transparent") # get rid of legend bg
+    , legend.box.background = element_rect(fill = "transparent", color = NA) # get rid of legend panel bg
+    , legend.key = element_rect(fill = "transparent", color = NA)
+    , legend.position = "bottom"
+    , legend.margin = margin(20,0.5,0.5,0.5)
+  )
+ggsave(f, filename = "bars_AvsB_highCRT.png",  bg = "transparent", path=here("output"))
+##############
+##############################################
+##############################################
