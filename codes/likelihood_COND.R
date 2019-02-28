@@ -1,4 +1,6 @@
+#########################################################################################
 ### COMPUTES THE (minus-log) LIKELIHOOD OF THE CQRE MODEL ON DATA FROM COND TREATMENT ###
+#########################################################################################
 
 likelihood_COND <- function(lambda){
   treat=(treatment=="COND")

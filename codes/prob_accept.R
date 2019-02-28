@@ -1,5 +1,6 @@
-### compute probability of being accepted (that j proposes) conditional on i's type and signal ###
-
+###############################################################################
+### computes probability that j proposes conditional on i's type and signal ###
+###############################################################################
 
 prob_accept<- function(sigma){
   p=matrix(c(0.5,0.5,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)

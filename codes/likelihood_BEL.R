@@ -1,4 +1,6 @@
+#########################################################################################
 ### COMPUTES THE (minus-log) LIKELIHOOD OF THE CQRE MODEL ON DATA FROM BEL TREATMENT ###
+#########################################################################################
 
 likelihood_BEL <- function(lambda, chi){
   treat=(treatment=="BEL")

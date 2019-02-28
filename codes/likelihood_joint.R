@@ -1,4 +1,6 @@
+#########################################################################################
 ### COMPUTES THE (minus-log) LIKELIHOOD OF THE CQRE MODEL ON DATA FROM ALL TREATMENTS ###
+#########################################################################################
 
 likelihood_joint <- function(lambda, chi_BASE, chi_BEL){
   treat=(treatment=="BASE")

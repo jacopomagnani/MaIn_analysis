@@ -1,4 +1,6 @@
-### COMPUTES THE (minus-log) LIKELIHOOD OF THE CQRE MODEL ON DATA FROM ALL TREATMENTS ###
+################################################################################################################################
+### COMPUTES THE (minus-log) LIKELIHOOD OF THE CQRE MODEL ON DATA FROM ALL TREATMENTS RESTRICTED TO SAME CHI IN BASE AND BEL ###
+################################################################################################################################
 
 likelihood_joint_restricted <- function(lambda, chi){
   treat=(treatment=="BASE")

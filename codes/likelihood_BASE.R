@@ -1,5 +1,6 @@
+#########################################################################################
 ### COMPUTES THE (minus-log) LIKELIHOOD OF THE CQRE MODEL ON DATA FROM BASE TREATMENT ###
-
+#########################################################################################
 
 likelihood_BASE <- function(lambda, chi){
   treat=(treatment=="BASE")
