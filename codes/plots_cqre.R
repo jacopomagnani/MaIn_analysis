@@ -23,6 +23,7 @@ m <- c(160,80,40)
 r <- c(NA,75,25) #first entry will be set depending on game
 M <- matrix(rep(m,3),nrow = 3,ncol = 3,byrow = TRUE)
 D <- matrix(c(0.5,0.5,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
+type_labels <- c("Hh","Hm","Hl","Mh","Mm","Ml","Lh","Lm","Ll")
 ##################################
 ##################################
 
@@ -30,19 +31,16 @@ D <- matrix(c(0.5,0.5,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
 ####### SET PARAMETER SPACE #########
 #####################################
 game_set <- c("A","B")
-type_set <- c("H","M")
 lambda_set <- c(0.05,0.10,0.15)
 chi_set <- seq(0,1,0.02)
-N <- length(game_set)*length(type_set)*length(lambda_set)*length(chi_set)
-offset <- length(game_set)*length(lambda_set)*length(chi_set)
+N <- length(game_set)*length(lambda_set)*length(chi_set)
 ##################################
 ##################################
 
 ##################################
 ####### INITIALIZE #########
 ##################################
-SIGMA=rep(0,N)
-TYPE=rep(0,N)
+for(i in seq(1,length(type_labels))){assign(type_labels[i],rep(0,N))}
 GAME=rep(0,N)
 LAMBDA=rep(0,N)
 CHI=rep(0,N)
@@ -54,40 +52,46 @@ i=0
 ####### SOLVE MODEL #########
 ##################################
 for(game in game_set){
-  if(game=="A"){r[1]=100}
-  if(game=="B"){r[1]=80}
+  if(game=="A"){r[1] <- 100}
+  if(game=="B"){r[1] <- 80}
   R <- matrix(rep(r,3),nrow = 3,ncol = 3,byrow = FALSE)
   for(lambda in lambda_set){
     for(chi in chi_set){
       i <- i+1
       VALUES <- solve_qre(D,R,M,lambda,chi)
-      SIGMA[i] <- VALUES[2] #type H
-      TYPE[i] <- "H"
+      Hh[i] <- VALUES[1]
+      Hm[i] <- VALUES[2]
+      Hl[i] <- VALUES[3]
+      Mh[i] <- VALUES[4]
+      Mm[i] <- VALUES[5]
+      Ml[i] <- VALUES[6]
+      Lh[i] <- VALUES[7]
+      Lm[i] <- VALUES[8]
+      Ll[i] <- VALUES[9]
       GAME[i] <- game
       LAMBDA[i] <- lambda
       CHI[i] <- chi
-      j <- i+offset
-      SIGMA[j] <- VALUES[5] #type M
-      TYPE[j] <- "M"
-      GAME[j] <- game
-      LAMBDA[j] <- lambda
-      CHI[j] <- chi
     }
   }
 }
+results <- data.frame(Hh, Hm, Hl, Mh, Mm, Ml, Lh, Lm, Ll, GAME, LAMBDA, CHI)
+results_tidy <- results %>% gather("TYPE","SIGMA",-GAME, -LAMBDA, -CHI)
 ##################################
 ##################################
 
 ##################################
-####### STORE DATA #########
+####### PREPARE PLOT DATA ########
 ##################################
-plot_data <- data.frame(SIGMA, TYPE, GAME, LAMBDA, CHI)
-plot_data_high <- plot_data %>%
-  filter(LAMBDA==0.15)
-plot_data_low <- plot_data %>%
-  filter(LAMBDA==0.05)
-plot_data_medium <- plot_data %>%
-  filter(LAMBDA==0.10)
+selected_types <- c("Hm", "Mm")
+plot_data_high <- results_tidy %>%
+  filter(LAMBDA==0.15) %>%
+  filter(TYPE %in% selected_types)
+plot_data_low <- results_gathered %>%
+  filter(LAMBDA==0.05) %>%
+  filter(TYPE %in% selected_types)
+plot_data_medium <- results_gathered %>%
+  filter(LAMBDA==0.10) %>%
+  filter(TYPE %in% selected_types)
 ##################################
 ##################################
 
@@ -113,7 +117,9 @@ for(plot_id in seq(1,length(lambda_set))){
     theme(legend.text = element_text(size = 16*scale), 
           legend.title = element_text(size = 16*scale)) +
     scale_color_discrete(name="Game") +
-    scale_linetype_discrete(name="Quality") +
+    scale_linetype_discrete(name="Quality",
+                            breaks=c("Hm", "Mm"),
+                            labels=c("H", "M")) +
     ylab(TeX("Proposal rate")) +
     xlab(TeX("$\\chi$")) +
     theme(axis.title.x = element_text(size=20*scale)) +
