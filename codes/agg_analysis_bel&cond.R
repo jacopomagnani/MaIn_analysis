@@ -18,7 +18,7 @@ library(latex2exp)
 ####################################
 #### CREATE GROUP MEANS DATASET ####
 ####################################
-data_raw<-read_csv(here("data","MaIn_data_bel_game.csv"))
+data_raw <- read_csv(here("data","MaIn_data_bel_game.csv"))
 min_round <- 20
 max_round <- 60
 data_bel <- data_raw %>%
@@ -38,7 +38,7 @@ data_bel <- data_raw %>%
   group_by(game) %>%
   summarise(mean = mean(player.choice))
 
-data_raw<-read_csv(here("data","MaIn_data_cond_game.csv"))
+data_raw <- read_csv(here("data","MaIn_data_cond_game.csv"))
 min_round <- 20
 max_round <- 60
 data_cond <- data_raw %>%
@@ -65,9 +65,9 @@ data_cond <- data_cond %>%
 data_plot <- data_bel %>%
   bind_rows(data_cond)
 
-scale=1.2
+scale <- 1.2
 
-f<-ggplot(data = data_plot, aes(x=game, 
+f <- ggplot(data = data_plot, aes(x=game, 
                              y=mean, 
                              colour=treatment, 
                              group=treatment, 

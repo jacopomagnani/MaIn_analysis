@@ -43,19 +43,19 @@ data_game <- data_game_raw %>%
   filter(player.signal=="m")
 ######################
 ### EDIT MPL DATA ###
-data_mpl<-read_csv(here("data","MaIn_data_base_mpl.csv"))
+data_mpl <-read_csv(here("data","MaIn_data_base_mpl.csv"))
 data_mpl <- data_mpl %>%
   mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
   select(participant.id_in_treatment, player.switching_row)
 ######################
 ### EDIT CRT DATA ###
-data_crt<-read_csv(here("data","MaIn_data_base_crt.csv"))
+data_crt <-read_csv(here("data","MaIn_data_base_crt.csv"))
 data_crt <- data_crt %>%
   mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
   select(participant.id_in_treatment, player.num_correct)
 ######################
 ### EDIT SURVEY DATA ###
-data_survey<-read_csv(here("data","MaIn_data_base_survey.csv"))
+data_survey <-read_csv(here("data","MaIn_data_base_survey.csv"))
 data_survey <- data_survey %>%
   mutate(player.sex=factor(player.sex)) %>%
   mutate(player.major=factor(player.major)) %>%
@@ -108,7 +108,7 @@ plot_data <- data_treatment %>%
            subsession.game_name
   ) %>%
   summarise(mean = mean(player.choice))
-scale=1.2
+scale <- 1.2
 f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name)) +
   geom_bar(stat="identity", position=position_dodge(), colour="black", width = 0.5) +
   scale_fill_manual(name  ="Game    ",
@@ -143,7 +143,7 @@ plot_data <- data_treatment %>%
            subsession.game_name
   ) %>%
   summarise(mean = mean(player.choice))
-scale=1.2
+scale <- 1.2
 f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name)) +
   geom_bar(stat="identity", position=position_dodge(), colour="black", width = 0.5) +
   scale_fill_manual(name  ="Game    ",

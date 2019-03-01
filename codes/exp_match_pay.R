@@ -12,9 +12,9 @@
 #M=matrix(rep(m,3),nrow = 3,ncol = 3,byrow = TRUE)
 
 exp_match_pay<- function(S,D,M,chi){
-  PI= D/matrix(rep(colSums(D),3),nrow = 3,ncol = 3,byrow = TRUE)
-  V = chi * M%*%PI +(1-chi) * ((M*D%*%t(S))%*%D)/(D%*%t(S)%*%D)
-  V[,1]=M[,1]
-  V[,3]=M[,3]
+  PI <- D/matrix(rep(colSums(D),3),nrow = 3,ncol = 3,byrow = TRUE)
+  V <- chi * M%*%PI +(1-chi) * ((M*D%*%t(S))%*%D)/(D%*%t(S)%*%D)
+  V[,1] <- M[,1]
+  V[,3] <- M[,3]
   return(V)
 }

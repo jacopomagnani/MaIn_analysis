@@ -80,28 +80,28 @@ mle_data = mle_data_BASE %>%
 ##################################
 ####### FIXED PARAMETERS #########
 ##################################
-M_BASE=matrix(rep(c(160,80,40),3),nrow = 3,ncol = 3,byrow = TRUE)
-D_BASE=matrix(c(0.5,0.5,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
-R_BASE_A=matrix(rep(c(100,75,25),3),nrow = 3,ncol = 3,byrow = FALSE)
-R_BASE_B=matrix(rep(c(80,75,25),3),nrow = 3,ncol = 3,byrow = FALSE)
+M_BASE <- matrix(rep(c(160,80,40),3),nrow = 3,ncol = 3,byrow = TRUE)
+D_BASE <- matrix(c(0.5,0.5,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
+R_BASE_A <- matrix(rep(c(100,75,25),3),nrow = 3,ncol = 3,byrow = FALSE)
+R_BASE_B <- matrix(rep(c(80,75,25),3),nrow = 3,ncol = 3,byrow = FALSE)
 
-M_BEL=matrix(rep(c(160,80,40),3),nrow = 3,ncol = 3,byrow = TRUE)
-D_BEL=matrix(c(0.5,0.5,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
-R_BEL=matrix(rep(c(100,75,25),3),nrow = 3,ncol = 3,byrow = FALSE)
-S_BEL_A=matrix(c(1,1.00,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
-S_BEL_B=matrix(c(1,0.75,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
-S_BEL_C=matrix(c(1,0.50,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
-S_BEL_D=matrix(c(1,0.25,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
-S_BEL_E=matrix(c(1,0.00,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
+M_BEL <- matrix(rep(c(160,80,40),3),nrow = 3,ncol = 3,byrow = TRUE)
+D_BEL <- matrix(c(0.5,0.5,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
+R_BEL <- matrix(rep(c(100,75,25),3),nrow = 3,ncol = 3,byrow = FALSE)
+S_BEL_A <- matrix(c(1,1.00,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
+S_BEL_B <- matrix(c(1,0.75,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
+S_BEL_C <- matrix(c(1,0.50,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
+S_BEL_D <- matrix(c(1,0.25,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
+S_BEL_E <- matrix(c(1,0.00,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
 
-M_COND=matrix(rep(c(160,80,40),3),nrow = 3,ncol = 3,byrow = TRUE)
-R_COND=matrix(rep(c(100,75,25),3),nrow = 3,ncol = 3,byrow = FALSE)
-S_COND=matrix(c(1,1,1,1,1,1,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
-D_COND_A=matrix(c(0.500,0.500,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
-D_COND_B=matrix(c(0.625,0.375,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
-D_COND_C=matrix(c(0.750,0.250,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
-D_COND_D=matrix(c(0.875,0.125,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
-D_COND_E=matrix(c(1.000,0.000,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
+M_COND <- matrix(rep(c(160,80,40),3),nrow = 3,ncol = 3,byrow = TRUE)
+R_COND <- matrix(rep(c(100,75,25),3),nrow = 3,ncol = 3,byrow = FALSE)
+S_COND <- matrix(c(1,1,1,1,1,1,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
+D_COND_A <- matrix(c(0.500,0.500,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
+D_COND_B <- matrix(c(0.625,0.375,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
+D_COND_C <- matrix(c(0.750,0.250,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
+D_COND_D <- matrix(c(0.875,0.125,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
+D_COND_E <- matrix(c(1.000,0.000,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
 ##################################
 ##################################
 
@@ -143,8 +143,8 @@ mle_results_joint_restricted <- mle2(minuslogl = likelihood_joint_restricted,
                           upper=c(lambda=0.4,chi=0.99))
 NLL_joint_restricted=mle_results_joint_restricted@details$objective
 rm(mle_results_joint_restricted)
-chistat=-2*(NLL_joint-NLL_joint_restricted) #chi2 statistic
-pvalue=1-pchisq(chistat,df=1)
+chistat <- -2*(NLL_joint-NLL_joint_restricted) #chi2 statistic
+pvalue <- 1-pchisq(chistat,df=1)
 ############################################
 ############################################
 
