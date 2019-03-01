@@ -55,12 +55,12 @@ data_group_means <- data_groups %>%
 #### FIGURE: ALL BARS ####
 ####################################
 
-scale=1.2
-games=c("A","B")
+scale <- 1.2
+games <- c("A","B")
 plot_names=c("bars_A.png","bars_B.png")
 for(i in c(1,2)){
-  game=games[i]
-  plot_name=plot_names[i]
+  game <- games[i]
+  plot_name <- plot_names[i]
   plot_data <- filter(data_group_means,subsession.game_name==game )
   f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=player.signal)) +
     geom_bar(stat="identity", position=position_dodge(), colour="black") +
@@ -95,7 +95,7 @@ for(i in c(1,2)){
 #####################################
 #### FIGURE: ONLY Hm and Mm BARS ####
 #####################################
-scale=1.2
+scale <- 1.2
 plot_data <- data_group_means %>% filter(player.type!="L" & player.signal=="m")
 f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name)) +
   geom_bar(stat="identity", position=position_dodge(), colour="black", width = 0.5) +
