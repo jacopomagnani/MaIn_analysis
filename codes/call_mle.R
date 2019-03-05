@@ -134,7 +134,6 @@ mle_results_joint <- mle2(minuslogl = likelihood_joint,
                          upper=c(lambda=0.4,chi_BASE=0.99, chi_BEL=0.99))
 summary(mle_results_joint)
 NLL_joint=mle_results_joint@details$objective
-rm(mle_results_joint)
 
 #test chi_BASE>chi_BEL
 mle_results_joint_restricted <- mle2(minuslogl = likelihood_joint_restricted,
@@ -144,7 +143,6 @@ mle_results_joint_restricted <- mle2(minuslogl = likelihood_joint_restricted,
                           lower=c(lambda=0.001,chi=0.001),
                           upper=c(lambda=0.4,chi=0.99))
 NLL_joint_restricted=mle_results_joint_restricted@details$objective
-rm(mle_results_joint_restricted)
 chistat <- -2*(NLL_joint-NLL_joint_restricted) #chi2 statistic
 pvalue <- 1-pchisq(chistat,df=1)
 ############################################
