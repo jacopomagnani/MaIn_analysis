@@ -21,10 +21,14 @@ source(here("codes","qre_probabilities.R"))
 ##################################
 ####### FIXED PARAMETERS #########
 ##################################
-m <- c(160,80,40)
-r <- c(NA,75,25) #first entry will be set depending on game
-M <- matrix(rep(m,3),nrow = 3,ncol = 3,byrow = TRUE)
-D <- matrix(c(0.5,0.5,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
+M_BEL <- matrix(rep(c(160,80,40),3),nrow = 3,ncol = 3,byrow = TRUE)
+D_BEL <- matrix(c(0.5,0.5,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
+R_BEL <- matrix(rep(c(100,75,25),3),nrow = 3,ncol = 3,byrow = FALSE)
+S_BEL_A <- matrix(c(1,1.00,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
+S_BEL_B <- matrix(c(1,0.75,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
+S_BEL_C <- matrix(c(1,0.50,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
+S_BEL_D <- matrix(c(1,0.25,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
+S_BEL_E <- matrix(c(1,0.00,0,1,1,0,1,1,1),nrow = 3,ncol = 3,byrow = TRUE)
 type_labels <- c("Hh","Hm","Hl","Mh","Mm","Ml","Lh","Lm","Ll")
 ##################################
 ##################################
@@ -32,9 +36,9 @@ type_labels <- c("Hh","Hm","Hl","Mh","Mm","Ml","Lh","Lm","Ll")
 #####################################
 ####### SET PARAMETER SPACE #########
 #####################################
-game_set <- c("A","B")
+game_set <- c("A","B","C","D","E")
 lambda_set <- c(0.05,0.10,0.15)
-chi_set <- seq(0,1,0.02)
+chi_set <- seq(0,1,0.5)
 N <- length(game_set)*length(lambda_set)*length(chi_set)
 ##################################
 ##################################
@@ -54,13 +58,15 @@ i=0
 ####### SOLVE MODEL #########
 ##################################
 for(game in game_set){
-  if(game=="A"){r[1] <- 100}
-  if(game=="B"){r[1] <- 80}
-  R <- matrix(rep(r,3),nrow = 3,ncol = 3,byrow = FALSE)
+  if(game=="A"){S_BEL <- S_BEL_A}
+  if(game=="B"){S_BEL <- S_BEL_B}
+  if(game=="C"){S_BEL <- S_BEL_C}
+  if(game=="D"){S_BEL <- S_BEL_D}
+  if(game=="E"){S_BEL <- S_BEL_E}
   for(lambda in lambda_set){
     for(chi in chi_set){
       i <- i+1
-      VALUES <- solve_qre(D,R,M,lambda,chi)
+      VALUES <- qre_probabilities(S_BEL,D_BEL,M_BEL,R_BEL,lambda,chi)
       Hh[i] <- VALUES[1]
       Hm[i] <- VALUES[2]
       Hl[i] <- VALUES[3]
@@ -77,14 +83,15 @@ for(game in game_set){
   }
 }
 results <- data.frame(Hh, Hm, Hl, Mh, Mm, Ml, Lh, Lm, Ll, GAME, LAMBDA, CHI)
-results_tidy <- results %>% gather("TYPE","SIGMA",-GAME, -LAMBDA, -CHI)
+results_tidy <- results %>% gather("TYPE","SIGMA",-GAME, -LAMBDA, -CHI) %>%
+  mutate(CHI=factor(CHI))
 ##################################
 ##################################
 
 ##################################
 ####### PREPARE PLOT DATA ########
 ##################################
-selected_types <- c("Hm", "Mm")
+selected_types <- c("Mm")
 plot_data_high <- results_tidy %>%
   filter(LAMBDA==0.15) %>%
   filter(TYPE %in% selected_types)
@@ -104,26 +111,26 @@ scale=1.2
 for(plot_id in seq(1,length(lambda_set))){
   if(plot_id==1){
     plot_data <- plot_data_high
-    plot_name <- "plot_cqre_high.png"
+    plot_name <- "plot_cqre_BEL_high.png"
   }
   if(plot_id==2){
     plot_data <- plot_data_medium
-    plot_name <- "plot_cqre_medium.png"
+    plot_name <- "plot_cqre_BEL_medium.png"
   }
   if(plot_id==3){
     plot_data <- plot_data_low
-    plot_name <- "plot_cqre_low.png"
+    plot_name <- "plot_cqre_BEL_low.png"
   }
-  f <- ggplot(plot_data, aes(x=CHI, y=SIGMA, colour=GAME, linetype=TYPE)) +
+  f <- ggplot(plot_data, aes(x=GAME, y=SIGMA, group=CHI, colour=CHI, linetype=CHI)) +
     geom_line(size=1) +
     theme(legend.text = element_text(size = 16*scale), 
           legend.title = element_text(size = 16*scale)) +
-    scale_color_discrete(name="Game") +
-    scale_linetype_discrete(name="Quality",
-                            breaks=c("Hm", "Mm"),
-                            labels=c("H", "M")) +
+    # scale_color_discrete(name="Game") +
+    # scale_linetype_discrete(name="Quality",
+    #                         breaks=c("Hm", "Mm"),
+    #                         labels=c("H", "M")) +
     ylab(TeX("Proposal rate")) +
-    xlab(TeX("$\\chi$")) +
+    xlab(TeX("Game")) +
     theme(axis.title.x = element_text(size=20*scale)) +
     theme(axis.title.y = element_text(size=16*scale)) +
     theme(axis.text.x  = element_text(size=16*scale)) +
