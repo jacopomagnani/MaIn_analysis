@@ -27,10 +27,7 @@
 
 qre_distance<-function(s,lambda,chi,D,R,M){
   S <- matrix(s,nrow = 3,ncol = 3,byrow = TRUE)
-  delta <- exp_match_pay(S,D,M,chi) - R
-  P_sum <- matrix(rep(colSums(D),3),nrow = 3,ncol = 3,byrow = TRUE)
-  prob_accept <- D%*%t(S)%*%D  / P_sum
-  delta  <-  prob_accept * (exp_match_pay(S,D,M,chi) - R)
+  delta  <-  prob_accept(S,D) * (exp_match_pay(S,D,M,chi) - R)
   diff <- S-1/(1/exp(lambda*(delta))+1)
   dist<-sum(diff^2)
   return(dist)	

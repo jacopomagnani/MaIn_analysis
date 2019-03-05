@@ -13,6 +13,7 @@ library(ggplot2)
 source(here("codes","solve_qre.R"))
 source(here("codes","qre_distance.R"))
 source(here("codes","exp_match_pay.R"))
+source(here("codes","prob_accept.R"))
 ##################################
 ##################################
 
@@ -86,10 +87,10 @@ selected_types <- c("Hm", "Mm")
 plot_data_high <- results_tidy %>%
   filter(LAMBDA==0.15) %>%
   filter(TYPE %in% selected_types)
-plot_data_low <- results_gathered %>%
+plot_data_low <- results_tidy %>%
   filter(LAMBDA==0.05) %>%
   filter(TYPE %in% selected_types)
-plot_data_medium <- results_gathered %>%
+plot_data_medium <- results_tidy %>%
   filter(LAMBDA==0.10) %>%
   filter(TYPE %in% selected_types)
 ##################################
