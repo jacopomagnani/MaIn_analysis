@@ -14,6 +14,7 @@ source(here("codes","solve_qre.R"))
 source(here("codes","qre_distance.R"))
 source(here("codes","exp_match_pay.R"))
 source(here("codes","prob_accept.R"))
+source(here("codes","qre_probabilities.R"))
 ##################################
 ##################################
 
