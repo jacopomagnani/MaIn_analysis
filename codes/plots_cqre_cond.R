@@ -59,10 +59,10 @@ i=0
 ##################################
 for(game in game_set){
   if(game=="A"){D_COND <- D_COND_A}
-  if(game=="B"){D_COND <- D_COND_A}
-  if(game=="C"){D_COND <- D_COND_A}
-  if(game=="D"){D_COND <- D_COND_A}
-  if(game=="E"){D_COND <- D_COND_A}
+  if(game=="B"){D_COND <- D_COND_B}
+  if(game=="C"){D_COND <- D_COND_C}
+  if(game=="D"){D_COND <- D_COND_D}
+  if(game=="E"){D_COND <- D_COND_E}
   for(lambda in lambda_set){
     for(chi in chi_set){
       i <- i+1
