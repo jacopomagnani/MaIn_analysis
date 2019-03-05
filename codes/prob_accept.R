@@ -1,6 +1,6 @@
-###############################################################################
-### COMPUTES PROBABILITY THAT j PROPOSES CONDITIONAL ON i'S TYPE ##############
-###############################################################################
+#####################################################
+### COMPUTES MATRIX OF "ACCEPTANCE" PROBABILITIES ###
+#####################################################
 #Inputs:
 #S: matrix of sigmas
 #D: matrix of signal likelihoods
