@@ -8,6 +8,8 @@
 library(here)
 library(tidyverse)
 library(forcats)
+library("sandwich")
+library("lmtest")
 ##############################################
 ##############################################
 
@@ -36,7 +38,7 @@ data_game_raw <- data_game_raw %>%
   mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
   mutate(session.code=factor(session.code)) %>%
   select(session.code, participant.id_in_treatment, player.choice,subsession.round_number,subsession.game_name,
-         player.match, player.partner_type, player.type, player.signal)
+         player.match, player.partner_type, player.type, player.signal,group.id_in_subsession)
 data_game <- data_game_raw %>%
   filter(subsession.round_number>20) %>%
   filter(player.type!="L") %>%
@@ -76,10 +78,34 @@ rm(list=c("data_game", "data_mpl", "data_crt", "data_survey"))
 
 
 ####################################
-#### REGRESSION ####
+#### BASELINE REGRESSION ####
 ####################################
 data_reg <- data_treatment
-reg1 <- glm(formula = player.choice ~
+reg_simple_lpm <- glm(formula = player.choice ~
+              + (player.type=="H")
+            + subsession.game_name
+            + (player.type=="H") * subsession.game_name
+            ,data=data_reg
+            ,family = "gaussian"
+)
+coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
+reg_simple_logit <- glm(formula = player.choice ~
+                        + (player.type=="H")
+                      + subsession.game_name
+                      + (player.type=="H") * subsession.game_name
+                      ,data=data_reg
+                      ,family = "binomial"
+)
+coeftest(reg_simple_logit, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
+
+##############################################
+##############################################
+
+####################################
+#### AUGMENTED REGRESSION ####
+####################################
+data_reg <- data_treatment
+reg_more <- glm(formula = player.choice ~
               + (player.type=="H")
             + subsession.game_name
             + (player.type=="H") * subsession.game_name
@@ -93,7 +119,7 @@ reg1 <- glm(formula = player.choice ~
             ,data=data_reg
             ,family = "gaussian"
 )
-summary(reg1)
+summary(reg_more)
 ##############################################
 ##############################################
 
