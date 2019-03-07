@@ -163,7 +163,7 @@ f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name
     , legend.position = "bottom"
     , legend.margin = margin(20,0.5,0.5,0.5)
   )
-ggsave(f, filename = "bars_AvsB_learnt.png",  bg = "transparent", path=here("output"))
+ggsave(f, filename = "bars_AvsB_learnt.png",  bg = "transparent", path=here("output/figures"))
 ##############
 ### SUBSAMPLE OF HIGH CRT SUBJS ###
 plot_data <- data_treatment %>%
@@ -198,7 +198,7 @@ f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name
     , legend.position = "bottom"
     , legend.margin = margin(20,0.5,0.5,0.5)
   )
-ggsave(f, filename = "bars_AvsB_highCRT.png",  bg = "transparent", path=here("output"))
+ggsave(f, filename = "bars_AvsB_highCRT.png",  bg = "transparent", path=here("output/figures"))
 ##############
 ##############################################
 ##############################################

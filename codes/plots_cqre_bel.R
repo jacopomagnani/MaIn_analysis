@@ -147,7 +147,7 @@ for(plot_id in seq(1,length(lambda_set))){
       , legend.key.size = unit(1*scale, "cm")
       , legend.position = "bottom"
     )
-  ggsave(f, filename = plot_name,  bg = "transparent", path= here("output"))
+  ggsave(f, filename = plot_name,  bg = "transparent", path= here("output/figures"))
 }
 ##################################
 ##################################

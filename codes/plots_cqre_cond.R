@@ -128,7 +128,7 @@ f <- ggplot(plot_data, aes(x=GAME, y=SIGMA, group=LAMBDA, colour=LAMBDA, linetyp
     , legend.key.size = unit(1*scale, "cm")
     , legend.position = "bottom"
   )
-ggsave(f, filename = plot_name,  bg = "transparent", path= here("output"))
+ggsave(f, filename = plot_name,  bg = "transparent", path= here("output/figures"))
 
 ##################################
 ##################################

@@ -102,5 +102,5 @@ f <- ggplot(data = data_plot, aes(x=game,
   scale_x_discrete(breaks=c("A", "B", "C","D","E"),
                      labels=c("1", "0.75", "0.5","0.25","0"))+
   geom_hline(aes(yintercept=0.66), colour="black", linetype="dashed")
-ggsave(f, filename = "Bel_Cond.png",  bg = "transparent", path=here("output"))
+ggsave(f, filename = "Bel_Cond.png",  bg = "transparent", path=here("output/figures"))
 

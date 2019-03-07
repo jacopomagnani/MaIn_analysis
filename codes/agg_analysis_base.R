@@ -87,7 +87,7 @@ for(i in c(1,2)){
       , legend.position = "bottom"
       , legend.margin = margin(20,0.5,0.5,0.5)
     )
-  ggsave(f, filename = plot_name,  bg = "transparent", path= here("output"))
+  ggsave(f, filename = plot_name,  bg = "transparent", path= here("output/figures"))
 }
 ##############################################
 ##############################################
@@ -122,7 +122,7 @@ f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name
     , legend.position = "bottom"
     , legend.margin = margin(20,0.5,0.5,0.5)
   )
-ggsave(f, filename = "bars_AvsB.png",  bg = "transparent", path = here("output"))
+ggsave(f, filename = "bars_AvsB.png",  bg = "transparent", path = here("output/figures"))
 
 ##############################################
 ##############################################
