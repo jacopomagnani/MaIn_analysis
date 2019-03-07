@@ -89,7 +89,7 @@ reg_simple_lpm <- glm(formula = player.choice ~
             ,data=data_reg
             ,family = "gaussian"
 )
-stargazer(reg_simple_lpm, out = here("output/tables","table_reg_ind_simple_lpm.text"))
+stargazer(reg_simple_lpm, out = here("output/tables","table_reg_ind_simple_lpm.tex"), float=FALSE)
 
 coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
 reg_simple_logit <- glm(formula = player.choice ~
