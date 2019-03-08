@@ -133,7 +133,7 @@ ggsave(f, filename = "bars_AvsB.png",  bg = "transparent", path = here("output/f
 test_data <- data_groups %>%
   filter(player.signal=="m" & player.type=="M"  & player.type!="L") 
   
-diff = test_data$mean_choice[test_data$subsession.game_name=="A"]-test_data$mean_choice[test_data$subsession.game_name=="B"]
+diff = test_data$mean_choice[test_data$subsession.game_name=="B"]-test_data$mean_choice[test_data$subsession.game_name=="A"]
 test=wilcox.test(diff, alternative = "two.sided")
 p=test$p.value
 pass=(p<=0.05)
