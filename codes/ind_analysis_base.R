@@ -11,6 +11,7 @@ library(forcats)
 library(sandwich)
 library(lmtest)
 library(stargazer)
+library(latex2exp)
 ##############################################
 ##############################################
 
@@ -89,9 +90,8 @@ reg_simple_lpm <- glm(formula = player.choice ~
             ,data=data_reg
             ,family = "gaussian"
 )
-stargazer(reg_simple_lpm, out = here("output/tables","table_reg_ind_simple_lpm.tex"), float=FALSE)
+results_simple_lp<-coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
 
-coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
 reg_simple_logit <- glm(formula = player.choice ~
                         + (player.type=="H")
                       + subsession.game_name
@@ -99,7 +99,20 @@ reg_simple_logit <- glm(formula = player.choice ~
                       ,data=data_reg
                       ,family = "binomial"
 )
-coeftest(reg_simple_logit, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
+results_simple_logit<-coeftest(reg_simple_logit, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
+stargazer(reg_simple_lpm, 
+          reg_simple_logit,
+          se = list(results_simple_lp[,"Std. Error"], results_simple_logit[,"Std. Error"]),
+          p = list(results_simple_lp[,"Pr(>|z|)"], results_simple_logit[,"Pr(>|z|)"]),
+          covariate.labels = c("$H$", "$B$", "$H\\times B$"),
+          dep.var.labels   = c("$propose$"),
+          column.labels = c("Linear", "Logit"),
+          model.names = FALSE,
+          model.numbers = FALSE,
+          out = here("output/tables","table_reg_ind_simple.tex"), 
+          float=FALSE)
+### REPLACE AIC WITH WALD TEST F, like:
+## waldtest(reg_simple_logit,vcov=vcovCL(x = reg_simple_logit, cluster = ~ participant.id_in_treatment + group.id_in_subsession))
 
 ##############################################
 ##############################################
