@@ -52,7 +52,7 @@ data_means_bel <- data_groups_bel %>%
   summarise(mean = mean(mean_choice))
 
 
-data_con <- read_csv(here("data","MaIn_data_cond_game.csv")) %>%
+data_cond <- read_csv(here("data","MaIn_data_cond_game.csv")) %>%
   mutate(player.type=factor(player.type)) %>%
   mutate(player.type=fct_recode(player.type,
                                 "H"="1",
@@ -67,7 +67,7 @@ data_con <- read_csv(here("data","MaIn_data_cond_game.csv")) %>%
   filter(player.status==0 & player.signal=="m") %>%
   filter(subsession.round_number>=min_round & subsession.round_number<=max_round)
 
-data_groups_cond <- data_bel %>%
+data_groups_cond <- data_cond %>%
   group_by(group.id_in_subsession,
            session.code,
            #player.type,
@@ -76,7 +76,7 @@ data_groups_cond <- data_bel %>%
   ) %>%
   summarise(mean_choice = mean(player.choice))
 
-data_means_cond <- data_groups_bel %>%
+data_means_cond <- data_groups_cond %>%
   group_by(#player.type,
     #player.signal,
     subsession.game_name
@@ -96,8 +96,8 @@ data_means_bel <- data_means_bel %>%
   mutate(treatment=rep("BEL",length(mean)))
 data_means_cond <- data_means_cond %>%
   mutate(treatment=rep("COND",length(mean)))
-data_plot <- data_bel %>%
-  bind_rows(data_cond)
+data_plot <- data_means_bel %>%
+  bind_rows(data_means_cond)
 
 scale <- 1.2
 
@@ -144,10 +144,15 @@ ggsave(f, filename = "Bel_Cond.png",  bg = "transparent", path=here("output/figu
 ###################################################################
 #### TEST DIFFERENCE IN Mm PROPOSAL RATES BETWEEN BEL and COND ####
 ###################################################################
-
-#diff = test_data$mean_choice[test_data$subsession.game_name=="B"]-test_data$mean_choice[test_data$subsession.game_name=="A"]
-#test=wilcox.test(diff, alternative = "two.sided")
-p=test$p.value
-pass=(p<=0.05)
+game_set=c("A", "B", "C", "D", "E")
+p=rep(0,length(game_set))
+i <- 0
+for(game in game_set){
+  groupmeans_bel <- data_groups_bel %>% filter(subsession.game_name==game) %>% pull(mean_choice)
+  groupmeans_cond <- data_groups_cond %>% filter(subsession.game_name==game) %>% pull(mean_choice)
+  test=wilcox.test(groupmeans_bel, groupmeans_cond, alternative = "greater")
+  i <- i+1
+  p[i]=test$p.value
+}
 ##############################################
 ##############################################
