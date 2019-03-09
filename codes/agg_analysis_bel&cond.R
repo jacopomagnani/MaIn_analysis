@@ -15,13 +15,12 @@ library(latex2exp)
 ##############################################
 ##############################################
 
-####################################
-#### CREATE GROUP MEANS DATASET ####
-####################################
-data_raw <- read_csv(here("data","MaIn_data_bel_game.csv"))
+#########################################
+#### CREATE GROUP AND MEANS DATASETS ####
+#########################################
 min_round <- 20
 max_round <- 60
-data_bel <- data_raw %>%
+data_bel <- read_csv(here("data","MaIn_data_bel_game.csv")) %>%
   mutate(player.type=factor(player.type)) %>%
   mutate(player.type=fct_recode(player.type,
                                 "H"="1",
@@ -32,16 +31,28 @@ data_bel <- data_raw %>%
                                   "h"="1",
                                   "m"="2",
                                   "l"="3")) %>%
-  mutate(game=factor(subsession.game_name)) %>%
+#  mutate(game=factor(subsession.game_name)) %>%
   filter(player.status==0 & player.signal=="m") %>%
-  filter(subsession.round_number>=min_round & subsession.round_number<=max_round) %>%
-  group_by(game) %>%
-  summarise(mean = mean(player.choice))
+  filter(subsession.round_number>=min_round & subsession.round_number<=max_round)
 
-data_raw <- read_csv(here("data","MaIn_data_cond_game.csv"))
-min_round <- 20
-max_round <- 60
-data_cond <- data_raw %>%
+data_groups_bel <- data_bel %>%
+  group_by(group.id_in_subsession,
+           session.code,
+           #player.type,
+           #player.signal,
+           subsession.game_name
+  ) %>%
+  summarise(mean_choice = mean(player.choice))
+
+data_means_bel <- data_groups_bel %>%
+  group_by(#player.type,
+           #player.signal,
+           subsession.game_name
+  ) %>%
+  summarise(mean = mean(mean_choice))
+
+
+data_con <- read_csv(here("data","MaIn_data_cond_game.csv")) %>%
   mutate(player.type=factor(player.type)) %>%
   mutate(player.type=fct_recode(player.type,
                                 "H"="1",
@@ -52,22 +63,45 @@ data_cond <- data_raw %>%
                                   "h"="1",
                                   "m"="2",
                                   "l"="3")) %>%
-  mutate(game=factor(subsession.game_name)) %>%
+  #  mutate(game=factor(subsession.game_name)) %>%
   filter(player.status==0 & player.signal=="m") %>%
-  filter(subsession.round_number>=min_round & subsession.round_number<=max_round) %>%
-  group_by(game) %>%
-  summarise(mean = mean(player.choice))
+  filter(subsession.round_number>=min_round & subsession.round_number<=max_round)
 
-data_bel <- data_bel %>%
+data_groups_cond <- data_bel %>%
+  group_by(group.id_in_subsession,
+           session.code,
+           #player.type,
+           #player.signal,
+           subsession.game_name
+  ) %>%
+  summarise(mean_choice = mean(player.choice))
+
+data_means_cond <- data_groups_bel %>%
+  group_by(#player.type,
+    #player.signal,
+    subsession.game_name
+  ) %>%
+  summarise(mean = mean(mean_choice))
+
+
+
+##############################################
+##############################################
+
+###################################################
+#### FIGURE: Mm PROPOSAL RATES IN BEL AND COND ####
+###################################################
+
+data_means_bel <- data_means_bel %>%
   mutate(treatment=rep("BEL",length(mean)))
-data_cond <- data_cond %>%
+data_means_cond <- data_means_cond %>%
   mutate(treatment=rep("COND",length(mean)))
 data_plot <- data_bel %>%
   bind_rows(data_cond)
 
 scale <- 1.2
 
-f <- ggplot(data = data_plot, aes(x=game, 
+f <- ggplot(data = data_plot, aes(x=subsession.game_name, 
                              y=mean, 
                              colour=treatment, 
                              group=treatment, 
@@ -104,3 +138,16 @@ f <- ggplot(data = data_plot, aes(x=game,
   geom_hline(aes(yintercept=0.66), colour="black", linetype="dashed")
 ggsave(f, filename = "Bel_Cond.png",  bg = "transparent", path=here("output/figures"))
 
+##############################################
+##############################################
+
+###################################################################
+#### TEST DIFFERENCE IN Mm PROPOSAL RATES BETWEEN BEL and COND ####
+###################################################################
+
+#diff = test_data$mean_choice[test_data$subsession.game_name=="B"]-test_data$mean_choice[test_data$subsession.game_name=="A"]
+#test=wilcox.test(diff, alternative = "two.sided")
+p=test$p.value
+pass=(p<=0.05)
+##############################################
+##############################################
