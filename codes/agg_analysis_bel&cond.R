@@ -31,22 +31,18 @@ data_bel <- read_csv(here("data","MaIn_data_bel_game.csv")) %>%
                                   "h"="1",
                                   "m"="2",
                                   "l"="3")) %>%
-#  mutate(game=factor(subsession.game_name)) %>%
   filter(player.status==0 & player.signal=="m") %>%
   filter(subsession.round_number>=min_round & subsession.round_number<=max_round)
 
 data_groups_bel <- data_bel %>%
   group_by(group.id_in_subsession,
            session.code,
-           #player.type,
-           #player.signal,
            subsession.game_name
   ) %>%
   summarise(mean_choice = mean(player.choice))
 
 data_means_bel <- data_groups_bel %>%
-  group_by(#player.type,
-           #player.signal,
+  group_by(
            subsession.game_name
   ) %>%
   summarise(mean = mean(mean_choice))
@@ -63,22 +59,18 @@ data_cond <- read_csv(here("data","MaIn_data_cond_game.csv")) %>%
                                   "h"="1",
                                   "m"="2",
                                   "l"="3")) %>%
-  #  mutate(game=factor(subsession.game_name)) %>%
   filter(player.status==0 & player.signal=="m") %>%
   filter(subsession.round_number>=min_round & subsession.round_number<=max_round)
 
 data_groups_cond <- data_cond %>%
   group_by(group.id_in_subsession,
            session.code,
-           #player.type,
-           #player.signal,
            subsession.game_name
   ) %>%
   summarise(mean_choice = mean(player.choice))
 
 data_means_cond <- data_groups_cond %>%
-  group_by(#player.type,
-    #player.signal,
+  group_by(
     subsession.game_name
   ) %>%
   summarise(mean = mean(mean_choice))
