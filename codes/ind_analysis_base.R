@@ -111,8 +111,6 @@ stargazer(reg_simple_lpm,
           model.numbers = FALSE,
           out = here("output/tables","table_reg_ind_simple.tex"), 
           float=FALSE)
-### REPLACE AIC WITH WALD TEST F, like:
-## waldtest(reg_simple_logit,vcov=vcovCL(x = reg_simple_logit, cluster = ~ participant.id_in_treatment + group.id_in_subsession))
 
 ##############################################
 ##############################################
