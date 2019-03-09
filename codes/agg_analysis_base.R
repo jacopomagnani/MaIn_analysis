@@ -11,9 +11,9 @@ library(forcats)
 ##############################################
 ##############################################
 
-####################################
-#### CREATE GROUP MEANS DATASET ####
-####################################
+########################################
+#### CREATE GROUP AND MEANS DATASET ####
+########################################
 data_all_base <- read_csv(here("data","MaIn_data_base_game.csv"))
 min_round <- 20
 max_round <- 60
@@ -42,7 +42,7 @@ data_groups <- data_all_base %>%
            ) %>%
   summarise(mean_choice = mean(player.choice[round_ind]))
 
-data_group_means <- data_groups %>%
+data_means <- data_groups %>%
   group_by(player.type,
            player.signal,
            subsession.game_name
@@ -61,7 +61,7 @@ plot_names=c("bars_A.png","bars_B.png")
 for(i in c(1,2)){
   game <- games[i]
   plot_name <- plot_names[i]
-  plot_data <- filter(data_group_means,subsession.game_name==game )
+  plot_data <- filter(data_means,subsession.game_name==game )
   f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=player.signal)) +
     geom_bar(stat="identity", position=position_dodge(), colour="black") +
     scale_fill_manual(name  ="Signal    ",
@@ -96,7 +96,7 @@ for(i in c(1,2)){
 #### FIGURE: ONLY Hm and Mm BARS ####
 #####################################
 scale <- 1.2
-plot_data <- data_group_means %>% filter(player.type!="L" & player.signal=="m")
+plot_data <- data_means %>% filter(player.type!="L" & player.signal=="m")
 f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name)) +
   geom_bar(stat="identity", position=position_dodge(), colour="black", width = 0.5) +
   scale_fill_manual(name  ="Game    ",
