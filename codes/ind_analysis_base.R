@@ -106,10 +106,10 @@ stargazer(reg_simple_lpm,
           p = list(results_simple_lp[,"Pr(>|z|)"], results_simple_logit[,"Pr(>|z|)"]),
           covariate.labels = c("$H$", "$B$", "$H\\times B$"),
           dep.var.labels   = c("$propose$"),
-          column.labels = c("Linear", "Logit"),
           model.names = FALSE,
-          model.numbers = FALSE,
-          out = here("output/tables","table_reg_ind_simple.tex"), 
+          add.lines = list(c("Regression", "Linear", "Logit"),
+                           c("Clustering", "Yes", "Yes")),
+          out = here("output/tables","table_reg_BASE_simple.tex"), 
           float=FALSE)
 
 ##############################################

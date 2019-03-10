@@ -89,23 +89,10 @@ rm(list=c("data_game", "data_mpl", "data_crt", "data_survey"))
 
 
 ####################################
-#### BASELINE REGRESSION ####
+#### BEL REGRESSION ####
 ####################################
 data_reg <- data_treatment
-reg_simple_lpm <- glm(formula = player.choice ~
-                      + subsession.adverse
-                      ,data=data_reg
-                      ,family = "gaussian"
-)
-results_simple_lpm<-coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
-##############################################
-##############################################
-
-####################################
-#### AUGMENTED REGRESSION ####
-####################################
-data_reg <- data_treatment
-reg_aug_lpm <- glm(formula = player.choice ~
+reg_bel_lpm <- glm(formula = player.choice ~
                         + subsession.adverse
                       + player.crt_score 
                       + player.sex
@@ -115,13 +102,24 @@ reg_aug_lpm <- glm(formula = player.choice ~
                       ,data=data_reg
                       ,family = "gaussian"
 )
-results_aug_lpm<-coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
+results_bel_lpm<-coeftest(reg_bel_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
+
+reg_bel_log <- glm(formula = player.choice ~
+                     + subsession.adverse
+                   + player.crt_score 
+                   + player.sex
+                   +  player.risk_aversion
+                   +  player.major
+                   +  subsession.round_number
+                   ,data=data_reg
+                   ,family = "binomial"
+)
+results_bel_log<-coeftest(reg_bel_log, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
 ##############################################
 ##############################################
 
-#####################################################################################
-
-
+##################################################################################################
+##################################################################################################
 
 ####################################
 #### CREATE COND DATASET ####
@@ -192,37 +190,66 @@ rm(list=c("data_game", "data_mpl", "data_crt", "data_survey"))
 ##############################################
 ##############################################
 
-
-
 ####################################
-#### BASELINE REGRESSION ####
+#### COND REGRESSION ####
 ####################################
-data_reg <- data_treatment
-reg_simple_lpm <- glm(formula = player.choice ~
-                        + subsession.adverse
-                      ,data=data_reg
-                      ,family = "gaussian"
-)
-results_simple_lpm<-coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
-##############################################
-##############################################
-
-####################################
-#### AUGMENTED REGRESSION ####
-####################################
-data_reg <- data_treatment
-reg_aug_lpm <- glm(formula = player.choice ~
+data_cond <- data_treatment
+reg_cond_lpm <- glm(formula = player.choice ~
                      + subsession.adverse
                    + player.crt_score 
                    + player.sex
                    +  player.risk_aversion
                    +  player.major
                    +  subsession.round_number
-                   ,data=data_reg
+                   ,data=data_cond
                    ,family = "gaussian"
 )
-results_aug_lpm<-coeftest(reg_aug_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
+results_cond_lpm<-coeftest(reg_cond_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
+
+reg_cond_log <- glm(formula = player.choice ~
+                     + subsession.adverse
+                   + player.crt_score 
+                   + player.sex
+                   +  player.risk_aversion
+                   +  player.major
+                   +  subsession.round_number
+                   ,data=data_cond
+                   ,family = "binomial"
+)
+results_cond_log<-coeftest(reg_cond_log, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
 ##############################################
 ##############################################
 
+##################################################################################################
+##################################################################################################
 
+####################################
+#### CREATE TABLE ####
+####################################
+stargazer(reg_bel_lpm, 
+          reg_bel_log,
+          reg_cond_lpm, 
+          reg_cond_log,
+          se = list(results_bel_lpm[,"Std. Error"],
+                    results_bel_log[,"Std. Error"],
+                    results_cond_lpm[,"Std. Error"],
+                    results_cond_log[,"Std. Error"]),
+          p = list(results_bel_lpm[,"Pr(>|z|)"],
+                   results_bel_log[,"Pr(>|z|)"],
+                   results_cond_lpm[,"Pr(>|z|)"],
+                   results_cond_log[,"Pr(>|z|)"]),
+          covariate.labels = c("Adverse selection $(1-p)$", NULL, NULL, NULL, NULL, NULL),
+          dep.var.labels   = c("$propose$"),
+          #column.labels = c("Linear", "Logit"),
+          column.labels   = c("BEL", "COND"),
+          column.separate = c(2, 2),
+          model.names = FALSE,
+          #model.numbers = FALSE,
+          omit = c("player.crt_score","player.sex","player.risk_aversion","player.major","subsession.round_number"),
+          add.lines = list(c("Regression", "Linear", "Logit","Linear", "Logit"),
+                             c("Individual Characteristics", "Yes", "Yes","Yes", "Yes"),
+                             c("Clustering", "Yes", "Yes","Yes", "Yes")),
+          out = here("output/tables","table_reg_B+C.tex"), 
+          float=FALSE)
+##############################################
+##############################################
