@@ -39,15 +39,17 @@ data_game_raw <- data_game_raw %>%
                                         "M"="2",
                                         "L"="3")) %>%
   mutate(subsession.game_name=factor(subsession.game_name))  %>%
-  mutate(subsession.gamma= 1.00 * (subsession.game_name=="A") + 
+  mutate(subsession.p= 1.00 * (subsession.game_name=="A") + 
            0.75 * (subsession.game_name=="B") + 
            0.50 * (subsession.game_name=="C") + 
            0.25 * (subsession.game_name=="D") + 
            0 * (subsession.game_name=="E")) %>%
+  mutate(subsession.adverse = 1 - subsession.p) %>%
   mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
   mutate(session.code=factor(session.code)) %>%
   select(session.code, participant.id_in_treatment, player.choice,subsession.round_number,subsession.game_name,
-         player.match, player.partner_type, player.type, player.signal,group.id_in_subsession, player.status, subsession.gamma)
+         player.match, player.partner_type, player.type, player.signal,group.id_in_subsession, player.status,
+         subsession.p, subsession.adverse)
 data_game <- data_game_raw %>%
   filter(subsession.round_number>20) %>%
   filter(player.status==0 & player.signal=="m")
@@ -91,7 +93,7 @@ rm(list=c("data_game", "data_mpl", "data_crt", "data_survey"))
 ####################################
 data_reg <- data_treatment
 reg_simple_lpm <- glm(formula = player.choice ~
-                      + subsession.gamma
+                      + subsession.adverse
                       ,data=data_reg
                       ,family = "gaussian"
 )
@@ -104,7 +106,7 @@ results_simple_lpm<-coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ particip
 ####################################
 data_reg <- data_treatment
 reg_aug_lpm <- glm(formula = player.choice ~
-                        + subsession.gamma
+                        + subsession.adverse
                       + player.crt_score 
                       + player.sex
                       +  player.risk_aversion
@@ -143,15 +145,17 @@ data_game_raw <- data_game_raw %>%
                                         "M"="2",
                                         "L"="3")) %>%
   mutate(subsession.game_name=factor(subsession.game_name))  %>%
-  mutate(subsession.gamma= 1.00 * (subsession.game_name=="A") + 
+  mutate(subsession.p= 1.00 * (subsession.game_name=="A") + 
            0.75 * (subsession.game_name=="B") + 
            0.50 * (subsession.game_name=="C") + 
            0.25 * (subsession.game_name=="D") + 
            0 * (subsession.game_name=="E")) %>%
+  mutate(subsession.adverse = 1 - subsession.p) %>%
   mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
   mutate(session.code=factor(session.code)) %>%
   select(session.code, participant.id_in_treatment, player.choice,subsession.round_number,subsession.game_name,
-         player.match, player.partner_type, player.type, player.signal,group.id_in_subsession, player.status, subsession.gamma)
+         player.match, player.partner_type, player.type, player.signal,group.id_in_subsession, player.status,
+         subsession.p, subsession.adverse)
 data_game <- data_game_raw %>%
   filter(subsession.round_number>20) %>%
   filter(player.status==0 & player.signal=="m")
@@ -195,7 +199,7 @@ rm(list=c("data_game", "data_mpl", "data_crt", "data_survey"))
 ####################################
 data_reg <- data_treatment
 reg_simple_lpm <- glm(formula = player.choice ~
-                        + subsession.gamma
+                        + subsession.adverse
                       ,data=data_reg
                       ,family = "gaussian"
 )
@@ -208,7 +212,7 @@ results_simple_lpm<-coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ particip
 ####################################
 data_reg <- data_treatment
 reg_aug_lpm <- glm(formula = player.choice ~
-                     + subsession.gamma
+                     + subsession.adverse
                    + player.crt_score 
                    + player.sex
                    +  player.risk_aversion

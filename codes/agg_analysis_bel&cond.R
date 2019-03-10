@@ -31,6 +31,12 @@ data_bel <- read_csv(here("data","MaIn_data_bel_game.csv")) %>%
                                   "h"="1",
                                   "m"="2",
                                   "l"="3")) %>%
+  mutate(subsession.p= 1.00 * (subsession.game_name=="A") + 
+           0.75 * (subsession.game_name=="B") + 
+           0.50 * (subsession.game_name=="C") + 
+           0.25 * (subsession.game_name=="D") + 
+           0 * (subsession.game_name=="E")) %>%
+  mutate(subsession.adverse = 1 - subsession.p) %>%
   filter(player.status==0 & player.signal=="m") %>%
   filter(subsession.round_number>=min_round & subsession.round_number<=max_round)
 
@@ -39,13 +45,11 @@ data_groups_bel <- data_bel %>%
            session.code,
            subsession.game_name
   ) %>%
-  summarise(mean_choice = mean(player.choice))
+  summarise(mean_choice = mean(player.choice), adverse = mean(subsession.adverse))
 
 data_means_bel <- data_groups_bel %>%
-  group_by(
-           subsession.game_name
-  ) %>%
-  summarise(mean = mean(mean_choice))
+  group_by(subsession.game_name) %>%
+  summarise(mean = mean(mean_choice), adverse = mean(adverse))
 
 
 data_cond <- read_csv(here("data","MaIn_data_cond_game.csv")) %>%
@@ -59,6 +63,12 @@ data_cond <- read_csv(here("data","MaIn_data_cond_game.csv")) %>%
                                   "h"="1",
                                   "m"="2",
                                   "l"="3")) %>%
+  mutate(subsession.p= 1.00 * (subsession.game_name=="A") + 
+           0.75 * (subsession.game_name=="B") + 
+           0.50 * (subsession.game_name=="C") + 
+           0.25 * (subsession.game_name=="D") + 
+           0 * (subsession.game_name=="E")) %>%
+  mutate(subsession.adverse = 1 - subsession.p) %>%
   filter(player.status==0 & player.signal=="m") %>%
   filter(subsession.round_number>=min_round & subsession.round_number<=max_round)
 
@@ -67,13 +77,11 @@ data_groups_cond <- data_cond %>%
            session.code,
            subsession.game_name
   ) %>%
-  summarise(mean_choice = mean(player.choice))
+  summarise(mean_choice = mean(player.choice), adverse = mean(subsession.adverse))
 
 data_means_cond <- data_groups_cond %>%
-  group_by(
-    subsession.game_name
-  ) %>%
-  summarise(mean = mean(mean_choice))
+  group_by(subsession.game_name) %>%
+  summarise(mean = mean(mean_choice), adverse = mean(adverse))
 
 
 
@@ -93,7 +101,7 @@ data_plot <- data_means_bel %>%
 
 scale <- 1.2
 
-f <- ggplot(data = data_plot, aes(x=subsession.game_name, 
+f <- ggplot(data = data_plot, aes(x=adverse, 
                              y=mean, 
                              colour=treatment, 
                              group=treatment, 
@@ -108,7 +116,7 @@ f <- ggplot(data = data_plot, aes(x=subsession.game_name,
   theme(legend.text = element_text(size = 16*scale), 
         legend.title = element_text(size = 16*scale)) +
   ylab("Proposal rate") +
-  xlab(TeX("$\\gamma$")) +
+  xlab(TeX("Adverse selection $(1-p)$")) +
   theme(axis.title.x = element_text(size=16*scale)) +
   theme(axis.title.y = element_text(size=16*scale)) +
   theme(axis.text.x  = element_text(size=16*scale)) +
@@ -125,8 +133,8 @@ f <- ggplot(data = data_plot, aes(x=subsession.game_name,
     , legend.key.size = unit(1, "cm")
     , legend.position = "bottom"
   ) +
-  scale_x_discrete(breaks=c("A", "B", "C","D","E"),
-                     labels=c("1", "0.75", "0.5","0.25","0"))+
+  #scale_x_discrete(breaks=c("A", "B", "C","D","E"),
+  #                   labels=c("1", "0.75", "0.5","0.25","0"))+
   geom_hline(aes(yintercept=0.66), colour="black", linetype="dashed")
 ggsave(f, filename = "Bel_Cond.png",  bg = "transparent", path=here("output/figures"))
 
