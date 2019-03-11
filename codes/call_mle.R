@@ -10,6 +10,7 @@ library(tidyverse)
 library(forcats)
 library(bbmle)
 library(here)
+library(stargazer)
 source(here("codes","solve_qre.R"))
 source(here("codes","qre_distance.R"))
 source(here("codes","exp_match_pay.R"))
@@ -111,29 +112,26 @@ D_COND_E <- matrix(c(1.000,0.000,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TR
 ############################################
 ####### RUN ESTIMATION FOR BASE ONLY #######
 ############################################
-mle_results_BASE <- mle2(minuslogl = likelihood_BASE,
+mle_BASE <- mle2(minuslogl = likelihood_BASE,
                     start = list(lambda=0.1, chi=0.5),
                     optimizer="nlminb", #NOTE: R will crash with default "optim"
                     data = mle_data,
                     lower=c(lambda=0.01,chi=0.01),
                     upper=c(lambda=0.4,chi=0.99))
-summary(mle_results_BASE)
 ############################################
 ############################################
-
-
 
 ############################################
 ####### RUN JOINT ESTIMATION ###############
 ############################################
-mle_results_joint <- mle2(minuslogl = likelihood_joint,
+mle_joint <- mle2(minuslogl = likelihood_joint,
                          start = list(lambda=0.1, chi_BASE=0.5, chi_BEL=0.5),
                          optimizer="nlminb", #NOTE: R will crash with default "optim"
                          data = mle_data,
                          lower=c(lambda=0.001,chi_BASE=0.001, chi_BEL=0.001),
                          upper=c(lambda=0.4,chi_BASE=0.99, chi_BEL=0.99))
-summary(mle_results_joint)
-NLL_joint=mle_results_joint@details$objective
+mle_results_joint <- summary(mle_joint)
+NLL_joint <- mle_joint@details$objective
 
 #test chi_BASE>chi_BEL
 mle_results_joint_restricted <- mle2(minuslogl = likelihood_joint_restricted,
@@ -145,6 +143,30 @@ mle_results_joint_restricted <- mle2(minuslogl = likelihood_joint_restricted,
 NLL_joint_restricted=mle_results_joint_restricted@details$objective
 chistat <- -2*(NLL_joint-NLL_joint_restricted) #chi2 statistic
 pvalue <- 1-pchisq(chistat,df=1)
+############################################
+############################################
+
+
+############################################
+####### OUTPUT TABLE ###############
+############################################
+dummydata <- data.frame(y=1,lambda=2,chi_BASE=3,chi_BEL=4)
+dummy_reg <- lm(formula = y ~ lambda + chi_BASE + chi_BEL, data = dummydata)
+stargazer(dummy_reg,
+          coef = list(mle_results_joint@coef[,"Estimate"]),
+          se = list(mle_results_joint@coef[,"Std. Error"]),
+          p = list(mle_results_joint@coef[,"Pr(z)"]),
+          covariate.labels = c("$\\lambda$", "$\\chi^{BASE}$", "$\\chi^{BEL}$"),
+          dep.var.labels   = NULL,
+          dep.var.labels.include = FALSE,
+          dep.var.caption ="",
+          model.names = FALSE,
+          omit = c("Constant"),
+          omit.stat = c("all"),
+          add.lines = list(c("-2 log Lik.", as.character(format(mle_results_joint@m2logL))),
+                           c("Observations", as.character(length(mle_joint@data$treatment)))),
+          out = here("output/tables","table_MLE.tex"), 
+          float=FALSE)
 ############################################
 ############################################
 
