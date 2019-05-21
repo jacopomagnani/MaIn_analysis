@@ -34,7 +34,7 @@ type_labels <- c("Hh","Hm","Hl","Mh","Mm","Ml","Lh","Lm","Ll")
 ####### SET PARAMETER SPACE #########
 #####################################
 game_set <- c("A","B")
-lambda_set <- c(0.05,0.10,0.15)
+lambda_set <- c(0.05,0.15,0.25)
 chi_set <- seq(0,1,0.02)
 N <- length(game_set)*length(lambda_set)*length(chi_set)
 ##################################
@@ -87,13 +87,13 @@ results_tidy <- results %>% gather("TYPE","SIGMA",-GAME, -LAMBDA, -CHI)
 ##################################
 selected_types <- c("Hm", "Mm")
 plot_data_high <- results_tidy %>%
-  filter(LAMBDA==0.15) %>%
+  filter(LAMBDA==0.25) %>%
   filter(TYPE %in% selected_types)
 plot_data_low <- results_tidy %>%
   filter(LAMBDA==0.05) %>%
   filter(TYPE %in% selected_types)
 plot_data_medium <- results_tidy %>%
-  filter(LAMBDA==0.10) %>%
+  filter(LAMBDA==0.15) %>%
   filter(TYPE %in% selected_types)
 ##################################
 ##################################
@@ -143,5 +143,44 @@ for(plot_id in seq(1,length(lambda_set))){
     )
   ggsave(f, filename = plot_name,  bg = "transparent", path= here("output/figures"))
 }
+
+#FACET PLOT#
+scale=1.2
+plot_data <- results_tidy %>%
+  filter(LAMBDA==0.05|LAMBDA==0.25) %>%
+  filter(TYPE %in% selected_types)
+plot_name <- "plot_cqre_all.png"
+f <- ggplot(plot_data, aes(x=CHI, y=SIGMA, colour=GAME, linetype=TYPE)) +
+  geom_line(size=1) +
+  facet_grid(.~ LAMBDA, labeller = label_bquote(cols = lambda == .(LAMBDA))) +
+  theme(legend.text = element_text(size = 16*scale), 
+        legend.title = element_text(size = 16*scale)) +
+  scale_color_discrete(name="Game") +
+  scale_linetype_discrete(name="Quality",
+                          breaks=c("Hm", "Mm"),
+                          labels=c("H", "M")) +
+  ylab(TeX("Proposal rate")) +
+  xlab(TeX("$\\chi$")) +
+  theme() +
+  theme(axis.title.x = element_text(size=20*scale)) +
+  theme(axis.title.y = element_text(size=16*scale)) +
+  theme(axis.text.x  = element_text(size=12*scale)) +
+  theme(axis.text.y  = element_text(size=16*scale)) +
+  ylim(0,1) +
+  theme(
+    strip.text = element_text(size=16*scale)
+    ,panel.background = element_rect(fill = "transparent") # bg of the panel
+    , plot.background = element_rect(fill = "transparent", color = NA) # bg of the plot
+    , panel.grid.major = element_line(colour = "grey") # get rid of major grid
+    , panel.grid.minor = element_blank() # get rid of minor grid
+    , panel.spacing = unit(1*scale, "cm")
+    , legend.background = element_rect(fill = "transparent") # get rid of legend bg
+    , legend.box.background = element_rect(fill = "transparent", color = NA) # get rid of legend panel bg
+    , legend.key = element_rect(fill = "transparent", color = NA)
+    , legend.key.size = unit(1*scale, "cm")
+    , legend.position = "bottom"
+  )
+ggsave(f, filename = plot_name,  bg = "transparent", path= here("output/figures"))
+
 ##################################
 ##################################
