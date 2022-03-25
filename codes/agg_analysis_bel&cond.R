@@ -4,20 +4,18 @@
 #########################################################################
 
 
-####################################
-#### PRELIMINARIES ####
-####################################
+# preliminaries -----------------------------------------------------------
+
 library(here)
 library(tidyverse)
 library(forcats)
 library(latex2exp)
 
-##############################################
-##############################################
 
-#########################################
-#### CREATE GROUP AND MEANS DATASETS ####
-#########################################
+
+# CREATE GROUP AND MEANS DATASETS -----------------------------------------
+
+
 min_round <- 20
 max_round <- 60
 data_bel <- read_csv(here("data","MaIn_data_bel_game.csv")) %>%
@@ -49,7 +47,7 @@ data_groups_bel <- data_bel %>%
 
 data_means_bel <- data_groups_bel %>%
   group_by(subsession.game_name) %>%
-  summarise(mean = mean(mean_choice), adverse = mean(adverse))
+  summarise(mean = mean(mean_choice), adverse = mean(adverse), sd = sd(mean_choice))
 
 
 data_cond <- read_csv(here("data","MaIn_data_cond_game.csv")) %>%
@@ -81,16 +79,12 @@ data_groups_cond <- data_cond %>%
 
 data_means_cond <- data_groups_cond %>%
   group_by(subsession.game_name) %>%
-  summarise(mean = mean(mean_choice), adverse = mean(adverse))
+  summarise(mean = mean(mean_choice), adverse = mean(adverse), sd = sd(mean_choice))
 
 
 
-##############################################
-##############################################
+# FIGURE: Mm PROPOSAL RATES IN BEL AND COND -------------------------------
 
-###################################################
-#### FIGURE: Mm PROPOSAL RATES IN BEL AND COND ####
-###################################################
 
 data_means_bel <- data_means_bel %>%
   mutate(treatment=rep("BEL",length(mean)))
@@ -108,8 +102,10 @@ f <- ggplot(data = data_plot, aes(x=adverse,
                              linetype=treatment,
                              shape=treatment
                             )) +
-  geom_point(size=3)+
+  geom_point(size=3) +
   geom_line(size=1) +
+  geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.1,
+                position=position_dodge(0)) +
   scale_color_discrete(name="Treatment") +
   scale_linetype_discrete(name="Treatment") +
   scale_shape_discrete(name="Treatment") +
@@ -135,12 +131,10 @@ f <- ggplot(data = data_plot, aes(x=adverse,
   )
 ggsave(f, filename = "Bel_Cond.png",  bg = "transparent", path=here("output/figures"))
 
-##############################################
-##############################################
 
-###################################################################
-#### TEST DIFFERENCE IN Mm PROPOSAL RATES BETWEEN BEL and COND ####
-###################################################################
+
+# TEST DIFFERENCE IN Mm PROPOSAL RATES BETWEEN BEL and COND ---------------
+
 game_set=c("A", "B", "C", "D", "E")
 p=rep(0,length(game_set))
 i <- 0
@@ -151,5 +145,3 @@ for(game in game_set){
   i <- i+1
   p[i]=test$p.value
 }
-##############################################
-##############################################
