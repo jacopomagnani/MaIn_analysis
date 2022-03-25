@@ -137,6 +137,7 @@ ggsave(f, filename = "Bel_Cond.png",  bg = "transparent", path=here("output/figu
 
 game_set=c("A", "B", "C", "D", "E")
 p=rep(0,length(game_set))
+diff=rep(0,length(game_set))
 i <- 0
 for(game in game_set){
   groupmeans_bel <- data_groups_bel %>% filter(subsession.game_name==game) %>% pull(mean_choice)
@@ -144,4 +145,8 @@ for(game in game_set){
   test=wilcox.test(groupmeans_bel, groupmeans_cond, alternative = "greater")
   i <- i+1
   p[i]=test$p.value
+  diff[i]=mean(groupmeans_bel)-mean(groupmeans_cond)
 }
+diff
+p
+
