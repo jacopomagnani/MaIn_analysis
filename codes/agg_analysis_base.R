@@ -2,18 +2,14 @@
 #### ANALYSIS OF MEANS FROM BASE SESSIONS ####
 ##############################################
 
-####################################
-#### PRELIMINARIES ####
-####################################
+# preliminaries -----------------------------------------------------------
+
 library(here)
 library(tidyverse)
 library(forcats)
-##############################################
-##############################################
 
-#########################################
-#### CREATE GROUP AND MEANS DATASETs ####
-#########################################
+# create group and means datasets -----------------------------------------
+
 data_all_base <- read_csv(here("data","MaIn_data_base_game.csv"))
 min_round <- 20
 max_round <- 60
@@ -47,13 +43,9 @@ data_means <- data_groups %>%
            player.signal,
            subsession.game_name
   ) %>%
-  summarise(mean = mean(mean_choice))
-##############################################
-##############################################
+  summarise(mean = mean(mean_choice), sd = sd(mean_choice))
 
-####################################
-#### FIGURE: ALL BARS ####
-####################################
+# figure: all bars --------------------------------------------------------
 
 scale <- 1.2
 games <- c("A","B")
@@ -64,12 +56,14 @@ for(i in c(1,2)){
   plot_data <- filter(data_means,subsession.game_name==game )
   f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=player.signal)) +
     geom_bar(stat="identity", position=position_dodge(), colour="black") +
+    geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,
+                  position=position_dodge(0.9)) +
     scale_fill_manual(name  ="Signal    ",
                       values=c( "h"="red", "m"="yellow","l"="blue"),
                       labels=c(" h  ", " m  ", " l ")) +
     ylab("Proposal rate") +
     xlab("Quality") +
-    ylim(0,1) +
+    #ylim(0,1) +
     theme(axis.title.y = element_text(size=16*scale)) +
     theme(axis.title.x = element_text(size=16*scale)) +
     theme(axis.text.x  = element_text(size=16*scale)) +
@@ -89,12 +83,10 @@ for(i in c(1,2)){
     )
   ggsave(f, filename = plot_name,  bg = "transparent", path= here("output/figures"))
 }
-##############################################
-##############################################
 
-#####################################
-#### FIGURE: ONLY Hm and Mm BARS ####
-#####################################
+
+# figure: only Mm and Hm bars ---------------------------------------------
+
 scale <- 1.2
 plot_data <- data_means %>% filter(player.type!="L" & player.signal=="m")
 f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name)) +
@@ -124,25 +116,68 @@ f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name
   )
 ggsave(f, filename = "bars_AvsB.png",  bg = "transparent", path = here("output/figures"))
 
-##############################################
-##############################################
 
-##############################################################
-#### TEST DIFFERENCE IN Mm PROPOSAL RATES BETWEEN A and B ####
-##############################################################
+# TEST DIFFERENCE IN Mm PROPOSAL RATES BETWEEN A and B --------------------
+
 test_data <- data_groups %>%
   filter(player.signal=="m" & player.type=="M"  & player.type!="L") 
-  
 diff = test_data$mean_choice[test_data$subsession.game_name=="B"]-test_data$mean_choice[test_data$subsession.game_name=="A"]
-test=wilcox.test(diff, alternative = "two.sided")
+test=wilcox.test(diff, alternative = "greater")
 p=test$p.value
-pass=(p<=0.05)
-##############################################
-##############################################
+reject=(p<=0.05)
 
-#######################################################################
-#### COMPUTE MEAN POINTS AND PARTNER TYPES FOR Mm REALIZED MATCHES ####
-#######################################################################
+test_data <- data_groups %>%
+  filter(player.signal=="m" & player.type=="H"  & player.type!="L") 
+diff = test_data$mean_choice[test_data$subsession.game_name=="B"]-test_data$mean_choice[test_data$subsession.game_name=="A"]
+test=wilcox.test(diff, alternative = "greater")
+p=test$p.value
+reject=(p<=0.05)
+
+
+# test if proposal rates are > or < than 50% ------------------------------
+
+#HmA
+test_data <- data_groups %>%
+  filter(player.signal=="m" & player.type=="H" & subsession.game_name=="A") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "less" )
+p=test$p.value
+reject=(p<=0.05)
+
+#HmA different from 0?
+test_data <- data_groups %>%
+  filter(player.signal=="m" & player.type=="H" & subsession.game_name=="A") 
+diff = test_data$mean_choice-0
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+
+#HmB
+test_data <- data_groups %>%
+  filter(player.signal=="m" & player.type=="H" & subsession.game_name=="B") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+
+#MmA
+test_data <- data_groups %>%
+  filter(player.signal=="m" & player.type=="M" & subsession.game_name=="A") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "less" )
+p=test$p.value
+reject=(p<=0.05)
+
+#MmB
+test_data <- data_groups %>%
+  filter(player.signal=="m" & player.type=="M" & subsession.game_name=="B") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+
+# COMPUTE MEAN POINTS AND PARTNER TYPES FOR Mm REALIZED MATCHES -----------
+
 data_all_base <- data_all_base %>%
   mutate(player.partner_type=factor(player.partner_type)) %>%
   mutate(player.partner_type=fct_recode(player.partner_type,
@@ -157,5 +192,3 @@ data_all_base %>%
             share_M=mean(player.partner_type=="M"),
             share_L=mean(player.partner_type=="L")
   )
-##############################################
-##############################################
