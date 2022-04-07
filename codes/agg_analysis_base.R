@@ -1,6 +1,4 @@
-##############################################
-#### ANALYSIS OF MEANS FROM BASE SESSIONS ####
-##############################################
+### ANALYSIS OF MEANS FROM BASE SESSIONS ###
 
 # preliminaries -----------------------------------------------------------
 
@@ -56,14 +54,14 @@ for(i in c(1,2)){
   plot_data <- filter(data_means,subsession.game_name==game )
   f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=player.signal)) +
     geom_bar(stat="identity", position=position_dodge(), colour="black") +
-    geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,
+    geom_errorbar(aes(ymin=mean-2*sd, ymax=mean+2*sd), width=.2,
                   position=position_dodge(0.9)) +
     scale_fill_manual(name  ="Signal    ",
                       values=c( "h"="red", "m"="yellow","l"="blue"),
                       labels=c(" h  ", " m  ", " l ")) +
     ylab("Proposal rate") +
     xlab("Quality") +
-    #ylim(0,1) +
+    ylim(-0.25,1.25) +
     theme(axis.title.y = element_text(size=16*scale)) +
     theme(axis.title.x = element_text(size=16*scale)) +
     theme(axis.text.x  = element_text(size=16*scale)) +
@@ -83,6 +81,22 @@ for(i in c(1,2)){
     )
   ggsave(f, filename = plot_name,  bg = "transparent", path= here("output/figures"))
 }
+
+
+
+# compute expected gains from proposing -----------------------------------
+source(here("codes","exp_match_pay.R"))
+source(here("codes","prob_accept.R"))
+D=matrix(c(0.5,0.5,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
+M=matrix(rep(c(160,80,40),3),nrow = 3,ncol = 3,byrow = TRUE)
+sigma_A=data_means %>% filter(subsession.game_name=="A") %>% pull(mean)
+S_A=matrix(sigma_A,nrow = 3,ncol = 3,byrow = TRUE)
+R_A=matrix(rep(c(100,75,25),3),nrow = 3,ncol = 3,byrow = FALSE)
+sigma_B=data_means %>% filter(subsession.game_name=="B") %>% pull(mean)
+S_B=matrix(sigma_B,nrow = 3,ncol = 3,byrow = TRUE)
+R_B=matrix(rep(c(80,75,25),3),nrow = 3,ncol = 3,byrow = FALSE)
+delta_A  <-  prob_accept(S_A,D) * (exp_match_pay(S_A,D,M,0) - R_A)
+delta_B  <-  prob_accept(S_B,D) * (exp_match_pay(S_B,D,M,0) - R_B)
 
 
 # figure: only Mm and Hm bars ---------------------------------------------
@@ -117,25 +131,116 @@ f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name
 ggsave(f, filename = "bars_AvsB.png",  bg = "transparent", path = here("output/figures"))
 
 
-# TEST DIFFERENCE IN Mm PROPOSAL RATES BETWEEN A and B --------------------
-
-test_data <- data_groups %>%
-  filter(player.signal=="m" & player.type=="M"  & player.type!="L") 
-diff = test_data$mean_choice[test_data$subsession.game_name=="B"]-test_data$mean_choice[test_data$subsession.game_name=="A"]
-test=wilcox.test(diff, alternative = "greater")
-p=test$p.value
-reject=(p<=0.05)
-
-test_data <- data_groups %>%
-  filter(player.signal=="m" & player.type=="H"  & player.type!="L") 
-diff = test_data$mean_choice[test_data$subsession.game_name=="B"]-test_data$mean_choice[test_data$subsession.game_name=="A"]
-test=wilcox.test(diff, alternative = "greater")
-p=test$p.value
-reject=(p<=0.05)
-
-
 # test if proposal rates are > or < than 50% ------------------------------
+#dominant strategies
 
+#HhA
+test_data <- data_groups %>%
+  filter(player.signal=="h" & player.type=="H" & subsession.game_name=="A") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+#HhB
+test_data <- data_groups %>%
+  filter(player.signal=="h" & player.type=="H" & subsession.game_name=="B") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+
+#MhA
+test_data <- data_groups %>%
+  filter(player.signal=="h" & player.type=="M" & subsession.game_name=="A") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+#MhB
+test_data <- data_groups %>%
+  filter(player.signal=="h" & player.type=="M" & subsession.game_name=="B") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+
+#LhA
+test_data <- data_groups %>%
+  filter(player.signal=="h" & player.type=="L" & subsession.game_name=="A") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+#LhB
+test_data <- data_groups %>%
+  filter(player.signal=="h" & player.type=="L" & subsession.game_name=="B") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+
+#LmA
+test_data <- data_groups %>%
+  filter(player.signal=="m" & player.type=="L" & subsession.game_name=="A") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+#LmB
+test_data <- data_groups %>%
+  filter(player.signal=="m" & player.type=="L" & subsession.game_name=="B") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+
+#LlA
+test_data <- data_groups %>%
+  filter(player.signal=="l" & player.type=="L" & subsession.game_name=="A") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+#LlB
+test_data <- data_groups %>%
+  filter(player.signal=="l" & player.type=="L" & subsession.game_name=="B") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "greater" )
+p=test$p.value
+reject=(p<=0.05)
+
+#dominated strategies
+#HlA
+test_data <- data_groups %>%
+  filter(player.signal=="l" & player.type=="H" & subsession.game_name=="A") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "less" )
+p=test$p.value
+reject=(p<=0.05)
+#HlB
+test_data <- data_groups %>%
+  filter(player.signal=="l" & player.type=="H" & subsession.game_name=="B") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "less" )
+p=test$p.value
+reject=(p<=0.05)
+
+#MlA
+test_data <- data_groups %>%
+  filter(player.signal=="l" & player.type=="M" & subsession.game_name=="A") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "less" )
+p=test$p.value
+reject=(p<=0.05)
+#MlB
+test_data <- data_groups %>%
+  filter(player.signal=="l" & player.type=="M" & subsession.game_name=="B") 
+diff = test_data$mean_choice-0.5
+test=wilcox.test(diff, alternative = "less" )
+p=test$p.value
+reject=(p<=0.05)
+
+#other strategies
 #HmA
 test_data <- data_groups %>%
   filter(player.signal=="m" & player.type=="H" & subsession.game_name=="A") 
@@ -160,11 +265,11 @@ test=wilcox.test(diff, alternative = "greater" )
 p=test$p.value
 reject=(p<=0.05)
 
-#MmA
+#MmA=0.5 or greater?
 test_data <- data_groups %>%
   filter(player.signal=="m" & player.type=="M" & subsession.game_name=="A") 
 diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "less" )
+test=wilcox.test(diff, alternative = "greater" )
 p=test$p.value
 reject=(p<=0.05)
 
@@ -176,19 +281,18 @@ test=wilcox.test(diff, alternative = "greater" )
 p=test$p.value
 reject=(p<=0.05)
 
-# COMPUTE MEAN POINTS AND PARTNER TYPES FOR Mm REALIZED MATCHES -----------
+# TEST DIFFERENCE IN Mm PROPOSAL RATES BETWEEN A and B --------------------
 
-data_all_base <- data_all_base %>%
-  mutate(player.partner_type=factor(player.partner_type)) %>%
-  mutate(player.partner_type=fct_recode(player.partner_type,
-                                        "H"="1",
-                                        "M"="2",
-                                        "L"="3"))
-data_all_base %>%
-  filter(player.type=="M" & player.signal=="m" & player.match==1) %>%
-  group_by(subsession.game_name) %>%
-  summarise(mean_points=mean(player.points),
-            share_H=mean(player.partner_type=="H"),
-            share_M=mean(player.partner_type=="M"),
-            share_L=mean(player.partner_type=="L")
-  )
+test_data <- data_groups %>%
+  filter(player.signal=="m" & player.type=="M"  & player.type!="L") 
+diff = test_data$mean_choice[test_data$subsession.game_name=="B"]-test_data$mean_choice[test_data$subsession.game_name=="A"]
+test=wilcox.test(diff, alternative = "greater")
+p=test$p.value
+reject=(p<=0.05)
+
+test_data <- data_groups %>%
+  filter(player.signal=="m" & player.type=="H"  & player.type!="L") 
+diff = test_data$mean_choice[test_data$subsession.game_name=="B"]-test_data$mean_choice[test_data$subsession.game_name=="A"]
+test=wilcox.test(diff, alternative = "greater")
+p=test$p.value
+reject=(p<=0.05)
