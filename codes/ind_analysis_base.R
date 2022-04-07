@@ -1,10 +1,8 @@
-###################################################################
 #### ANALYSIS OF INDIVIDUAL CHARACTERISTICS FROM BASE SESSIONS ####
-###################################################################
 
-####################################
-#### PRELIMINARIES ####
-####################################
+
+# preliminaries -----------------------------------------------------------
+
 library(here)
 library(tidyverse)
 library(forcats)
@@ -12,13 +10,10 @@ library(sandwich)
 library(lmtest)
 library(stargazer)
 library(latex2exp)
-##############################################
-##############################################
 
-####################################
-#### CREATE DATASET ####
-####################################
-### EDIT GAME DATA ###
+
+# EDIT GAME DATA  ---------------------------------------------------------
+
 data_game_raw<-read_csv(here("data","MaIn_data_base_game.csv"))
 data_game_raw <- data_game_raw %>%
   mutate(player.type=factor(player.type)) %>%
@@ -38,35 +33,43 @@ data_game_raw <- data_game_raw %>%
                                         "L"="3")) %>%
   mutate(subsession.game_name=factor(subsession.game_name))  %>%
   mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
+  mutate(group.id_in_treatment=interaction(factor(session.code),factor(group.id_in_subsession))) %>%
   mutate(session.code=factor(session.code)) %>%
   select(session.code, participant.id_in_treatment, player.choice,subsession.round_number,subsession.game_name,
-         player.match, player.partner_type, player.type, player.signal,group.id_in_subsession)
+         player.match, player.partner_type, player.type, player.signal,group.id_in_treatment)
 data_game <- data_game_raw %>%
   filter(subsession.round_number>20) %>%
   filter(player.type!="L") %>%
   filter(player.signal=="m")
-######################
-### EDIT MPL DATA ###
+
+# EDIT MPL DATA -----------------------------------------------------------
+
 data_mpl <-read_csv(here("data","MaIn_data_base_mpl.csv"))
 data_mpl <- data_mpl %>%
   mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
   select(participant.id_in_treatment, player.switching_row)
-######################
-### EDIT CRT DATA ###
+
+
+# EDIT CRT DATA -----------------------------------------------------------
+
 data_crt <-read_csv(here("data","MaIn_data_base_crt.csv"))
 data_crt <- data_crt %>%
   mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
   select(participant.id_in_treatment, player.num_correct)
-######################
-### EDIT SURVEY DATA ###
+
+
+# EDIT SURVEY DATA --------------------------------------------------------
+
 data_survey <-read_csv(here("data","MaIn_data_base_survey.csv"))
 data_survey <- data_survey %>%
   mutate(player.sex=factor(player.sex)) %>%
   mutate(player.major=factor(player.major)) %>%
   mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
   select(participant.id_in_treatment,player.sex,player.major)
-######################
-### MERGE DATA ACROSS APPS ###
+
+
+# MERGE DATA ACROSS APPS --------------------------------------------------
+
 data_treatment <- data_game %>%
   left_join(data_mpl, by="participant.id_in_treatment") %>%
   left_join(data_crt, by="participant.id_in_treatment") %>%
@@ -74,14 +77,10 @@ data_treatment <- data_game %>%
   rename(player.risk_aversion = "player.switching_row") %>%
   rename(player.crt_score = "player.num_correct")
 rm(list=c("data_game", "data_mpl", "data_crt", "data_survey"))
-##############################
-##############################################
-##############################################
 
 
-####################################
-#### BASELINE REGRESSION ####
-####################################
+# BASELINE REGRESSION -----------------------------------------------------
+
 data_reg <- data_treatment %>%
   mutate(subsession.game_A=(subsession.game_name=="A"))
 reg_simple_lpm <- glm(formula = player.choice ~
@@ -91,7 +90,10 @@ reg_simple_lpm <- glm(formula = player.choice ~
             ,data=data_reg
             ,family = "gaussian"
 )
-results_simple_lp<-coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
+results_simple_lp<-coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_treatment, multi0=TRUE)
+coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ group.id_in_treatment, multi0=TRUE)
+coeftest(reg_simple_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment, multi0=TRUE)
+
 
 reg_simple_logit <- glm(formula = player.choice ~
                         + (player.type=="H")
@@ -100,7 +102,13 @@ reg_simple_logit <- glm(formula = player.choice ~
                       ,data=data_reg
                       ,family = "binomial"
 )
-results_simple_logit<-coeftest(reg_simple_logit, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
+results_simple_logit<-coeftest(reg_simple_logit, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession, multi0=TRUE)
+coeftest(reg_simple_logit, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_treatment, multi0=TRUE)
+coeftest(reg_simple_logit, vcov = vcovCL, cluster = ~ participant.id_in_treatment, multi0=TRUE)
+coeftest(reg_simple_logit, vcov = vcovCL, cluster = ~group.id_in_treatment, multi0=TRUE)
+
+
+
 stargazer(reg_simple_lpm, 
           reg_simple_logit,
           se = list(results_simple_lp[,"Std. Error"], results_simple_logit[,"Std. Error"]),
@@ -113,12 +121,10 @@ stargazer(reg_simple_lpm,
           out = here("output/tables","table_reg_BASE_simple.tex"), 
           float=FALSE)
 
-##############################################
-##############################################
 
-####################################
-#### AUGMENTED REGRESSION ####
-####################################
+
+# AUGMENTED REGRESSION ----------------------------------------------------
+
 data_reg <- data_treatment %>%
   mutate(player.risk_aversion=(player.risk_aversion-mean(player.risk_aversion))/sd(player.risk_aversion)) %>%
   mutate(player.crt_score=(player.crt_score-mean(player.crt_score))/sd(player.crt_score)) %>%
@@ -176,12 +182,10 @@ stargazer(reg_more_lpm,
           single.row = TRUE,
           out = here("output/tables","table_reg_BASE_big.tex"), 
           float=FALSE)
-##############################################
-##############################################
 
-####################################
-#### BAR PLOTS FOR SUBSAMPLES ####
-####################################
+
+# BAR PLOTS FOR SUBSAMPLES ------------------------------------------------
+
 data_treatment <- data_treatment %>%
   mutate(subsession.late=(subsession.round_number>=45)) %>%
   mutate(player.high_crt=(player.crt_score >=2)) %>%
@@ -230,6 +234,3 @@ for(i in seq_along(var_subsample)){
     ggsave(f, filename = plot_name,  bg = "transparent", path=here("output/figures"))
   }
 }
-
-##############################################
-##############################################
