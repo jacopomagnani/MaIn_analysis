@@ -65,12 +65,12 @@ bin_width=0.1
 minbin=-1.05
 maxbin=+1.05
 ceiling=0.45
-scale=1
+scale=1.5
 #plot with Mm change distribution
-ggplot(data_frequencies_s, aes(x=-MmB+MmA)) +
+f <- ggplot(data_frequencies_s, aes(x=-MmB+MmA)) +
   geom_histogram(aes(y =(..count..)/48),
                  color="black",
-                 fill="white",
+                 fill="grey",
                  breaks=seq(minbin, maxbin, by=bin_width)) +
   ylim(c(0,ceiling)) +
   ylab("Frequency") +
@@ -92,11 +92,13 @@ ggplot(data_frequencies_s, aes(x=-MmB+MmA)) +
     , legend.position = "bottom"
     , legend.margin = margin(20,0.5,0.5,0.5)
   )
-#plot with Mm change distribution
-ggplot(data_frequencies_s, aes(x=-HmB+HmA)) +
+ggsave(f, filename = "hist_Mm_change.png",  bg = "transparent", path= here("output/figures"))
+
+#plot with Hm change distribution
+f <- ggplot(data_frequencies_s, aes(x=-HmB+HmA)) +
   geom_histogram(aes(y =(..count..)/48),
                  color="black",
-                 fill="white",
+                 fill="grey",
                  breaks=seq(minbin, maxbin, by=bin_width)) +
   ylim(c(0,ceiling))+
   ylab("Frequency") +
@@ -118,6 +120,7 @@ ggplot(data_frequencies_s, aes(x=-HmB+HmA)) +
     , legend.position = "bottom"
     , legend.margin = margin(20,0.5,0.5,0.5)
   )
+ggsave(f, filename = "hist_Hm_change.png",  bg = "transparent", path= here("output/figures"))
 
 #plot with two distributions
 plot_data <- data_frequencies_s %>%
@@ -131,7 +134,7 @@ ggplot(plot_data, aes(x=value, color=key)) +
 test_data <- data_frequencies_s %>%
   mutate(change_H=-HmB+HmA, change_M = -MmB+MmA)
 diff = test_data$change_H-test_data$change_M
-test=wilcox.test(diff, alternative = "two.sided")
+test=wilcox.test(diff, alternative = "less")
 p=test$p.value
 reject_null=(p<=0.05)
 #hypothesis test: change=0 for M types
@@ -145,7 +148,7 @@ reject_null=(p<=0.05)
 test_data <- data_frequencies_s %>%
   mutate(change_H=-HmB+HmA, change_M = -MmB+MmA)
 diff = test_data$change_H-0
-test=wilcox.test(diff, alternative = "two.sided")
+test=wilcox.test(diff, alternative = "less")
 p=test$p.value
 reject_null=(p<=0.05)
 
@@ -187,7 +190,7 @@ sum(data_frequencies_s$MmA_propose*data_frequencies_s$MmB_propose)/sum(data_freq
 sum((1-data_frequencies_s$MmA_propose)*data_frequencies_s$MmB_propose)/sum(1-data_frequencies_s$MmA_propose)
 
 
-# Mm players who propose>50% in A are not more likely to propose>50% as Hm players in B
+# Mm players who propose>50% in A are more likely to propose>50% as Hm players in B
 sum(data_frequencies_s$MmA_propose*data_frequencies_s$HmB_propose)/sum(data_frequencies_s$MmA_propose)
 sum((1-data_frequencies_s$MmA_propose)*data_frequencies_s$HmB_propose)/sum(1-data_frequencies_s$MmA_propose)
 
@@ -218,7 +221,7 @@ output_matrix = matrix(nrow=num_variables, ncol=num_variables)
 for(i in seq(1:num_variables)){
   for(j in seq(1:num_variables)){
     output_matrix[i,j]=sum(data_freq[,i]*data_freq[,j])
-    if((i+1)%/%2>(j+1)%/%2){output_matrix[i,j]="-"}
+    #if((i+1)%/%2>(j+1)%/%2){output_matrix[i,j]="-"}
   }
 }
 library(xtable)
