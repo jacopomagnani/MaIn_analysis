@@ -31,7 +31,8 @@ data_game_raw <- data_game_raw %>%
   mutate(session.code=factor(session.code)) %>%
   select(session.code, participant.id_in_treatment, player.choice,subsession.round_number,subsession.game_name,
          player.match, player.partner_type, player.type, player.signal,group.id_in_subsession)
-
+min_round = 20
+data_game_raw <- data_game_raw %>% filter(subsession.round_number>=min_round)
 
 # create individual frequencies -------------------------------------------
 
