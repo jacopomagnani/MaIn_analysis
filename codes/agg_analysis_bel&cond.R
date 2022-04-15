@@ -1,7 +1,5 @@
 
-#########################################################################
-#### ANALYSIS OF AGGREGATE PROPOSAL RATES FROM BEL and COND SESSIONS ####
-#########################################################################
+### ANALYSIS OF AGGREGATE PROPOSAL RATES FROM BEL and COND SESSIONS ###
 
 
 # preliminaries -----------------------------------------------------------
