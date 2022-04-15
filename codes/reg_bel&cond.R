@@ -1,10 +1,7 @@
-###################################################################
-#### ANALYSIS OF INDIVIDUAL PROPOSAL DECISIONS FROM BEL & COND ####
-###################################################################
+### ANALYSIS OF INDIVIDUAL PROPOSAL DECISIONS FROM BEL & COND ###
 
-####################################
-#### PRELIMINARIES ####
-####################################
+# preliminaries -----------------------------------------------------------
+
 library(here)
 library(tidyverse)
 library(forcats)
@@ -12,14 +9,12 @@ library(sandwich)
 library(lmtest)
 library(stargazer)
 library(latex2exp)
-##############################################
-##############################################
 
 
 
-####################################
-#### CREATE BEL DATASET ####
-####################################
+
+# create BEL data -------------------------------------------------------------
+
 ### EDIT GAME DATA ###
 data_game_raw<-read_csv(here("data","MaIn_data_bel_game.csv"))
 data_game_raw <- data_game_raw %>%
@@ -50,81 +45,32 @@ data_game_raw <- data_game_raw %>%
   select(session.code, participant.id_in_treatment, player.choice,subsession.round_number,subsession.game_name,
          player.match, player.partner_type, player.type, player.signal,group.id_in_subsession, player.status,
          subsession.p, subsession.adverse)
+min_round=0
 data_game <- data_game_raw %>%
-  filter(subsession.round_number>20) %>%
+  filter(subsession.round_number>=min_round) %>%
   filter(player.status==0 & player.signal=="m")
-######################
-### EDIT MPL DATA ###
-data_mpl <-read_csv(here("data","MaIn_data_bel_mpl.csv"))
-data_mpl <- data_mpl %>%
-  mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
-  select(participant.id_in_treatment, player.switching_row)
-######################
-### EDIT CRT DATA ###
-data_crt <-read_csv(here("data","MaIn_data_bel_crt.csv"))
-data_crt <- data_crt %>%
-  mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
-  select(participant.id_in_treatment, player.num_correct)
-######################
-### EDIT SURVEY DATA ###
-data_survey <-read_csv(here("data","MaIn_data_bel_survey.csv"))
-data_survey <- data_survey %>%
-  mutate(player.sex=factor(player.sex)) %>%
-  mutate(player.major=factor(player.major)) %>%
-  mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
-  select(participant.id_in_treatment,player.sex,player.major)
-######################
-### MERGE DATA ACROSS APPS ###
-data_treatment <- data_game %>%
-  left_join(data_mpl, by="participant.id_in_treatment") %>%
-  left_join(data_crt, by="participant.id_in_treatment") %>%
-  left_join(data_survey, by="participant.id_in_treatment") %>%
-  rename(player.risk_aversion = "player.switching_row") %>%
-  rename(player.crt_score = "player.num_correct")
-rm(list=c("data_game", "data_mpl", "data_crt", "data_survey"))
-##############################
-##############################################
-##############################################
 
 
+# BEL regression ----------------------------------------------------------
 
-####################################
-#### BEL REGRESSION ####
-####################################
-data_reg <- data_treatment
+data_reg <- data_game
 reg_bel_lpm <- glm(formula = player.choice ~
-                        + subsession.adverse
-                      + player.crt_score 
-                      + player.sex
-                      +  player.risk_aversion
-                      +  player.major
-                      +  subsession.round_number
-                      ,data=data_reg
-                      ,family = "gaussian"
+                     + subsession.adverse
+                   ,data=data_reg
+                   ,family = "gaussian"
 )
-results_bel_lpm<-coeftest(reg_bel_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
+results_bel_lpm<-coeftest(reg_bel_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession,multi0=TRUE)
 
 reg_bel_log <- glm(formula = player.choice ~
                      + subsession.adverse
-                   + player.crt_score 
-                   + player.sex
-                   +  player.risk_aversion
-                   +  player.major
-                   +  subsession.round_number
                    ,data=data_reg
                    ,family = "binomial"
 )
-results_bel_log<-coeftest(reg_bel_log, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
-##############################################
-##############################################
+results_bel_log<-coeftest(reg_bel_log, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession,multi0=TRUE)
 
-##################################################################################################
-##################################################################################################
 
-####################################
-#### CREATE COND DATASET ####
-####################################
-### EDIT GAME DATA ###
+# create COND data --------------------------------------------------------
+
 data_game_raw<-read_csv(here("data","MaIn_data_cond_game.csv"))
 data_game_raw <- data_game_raw %>%
   mutate(player.type=factor(player.type)) %>%
@@ -154,78 +100,32 @@ data_game_raw <- data_game_raw %>%
   select(session.code, participant.id_in_treatment, player.choice,subsession.round_number,subsession.game_name,
          player.match, player.partner_type, player.type, player.signal,group.id_in_subsession, player.status,
          subsession.p, subsession.adverse)
-data_game <- data_game_raw %>%
-  filter(subsession.round_number>20) %>%
-  filter(player.status==0 & player.signal=="m")
-######################
-### EDIT MPL DATA ###
-data_mpl <-read_csv(here("data","MaIn_data_cond_mpl.csv"))
-data_mpl <- data_mpl %>%
-  mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
-  select(participant.id_in_treatment, player.switching_row)
-######################
-### EDIT CRT DATA ###
-data_crt <-read_csv(here("data","MaIn_data_cond_crt.csv"))
-data_crt <- data_crt %>%
-  mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
-  select(participant.id_in_treatment, player.num_correct)
-######################
-### EDIT SURVEY DATA ###
-data_survey <-read_csv(here("data","MaIn_data_cond_survey.csv"))
-data_survey <- data_survey %>%
-  mutate(player.sex=factor(player.sex)) %>%
-  mutate(player.major=factor(player.major)) %>%
-  mutate(participant.id_in_treatment=interaction(factor(session.code),factor(participant.id_in_session))) %>%
-  select(participant.id_in_treatment,player.sex,player.major)
-######################
-### MERGE DATA ACROSS APPS ###
-data_treatment <- data_game %>%
-  left_join(data_mpl, by="participant.id_in_treatment") %>%
-  left_join(data_crt, by="participant.id_in_treatment") %>%
-  left_join(data_survey, by="participant.id_in_treatment") %>%
-  rename(player.risk_aversion = "player.switching_row") %>%
-  rename(player.crt_score = "player.num_correct")
-rm(list=c("data_game", "data_mpl", "data_crt", "data_survey"))
-##############################
-##############################################
-##############################################
 
-####################################
-#### COND REGRESSION ####
-####################################
-data_cond <- data_treatment
+min_round=20
+data_game <- data_game_raw %>%
+  filter(subsession.round_number>=min_round) %>%
+  filter(player.status==0 & player.signal=="m")
+
+# COND regressions --------------------------------------------------------
+
+data_cond <- data_game
 reg_cond_lpm <- glm(formula = player.choice ~
                      + subsession.adverse
-                   + player.crt_score 
-                   + player.sex
-                   +  player.risk_aversion
-                   +  player.major
-                   +  subsession.round_number
                    ,data=data_cond
                    ,family = "gaussian"
 )
-results_cond_lpm<-coeftest(reg_cond_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
+results_cond_lpm<-coeftest(reg_cond_lpm, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession,multi0=TRUE)
 
 reg_cond_log <- glm(formula = player.choice ~
                      + subsession.adverse
-                   + player.crt_score 
-                   + player.sex
-                   +  player.risk_aversion
-                   +  player.major
-                   +  subsession.round_number
                    ,data=data_cond
                    ,family = "binomial"
 )
-results_cond_log<-coeftest(reg_cond_log, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession)
-##############################################
-##############################################
+results_cond_log<-coeftest(reg_cond_log, vcov = vcovCL, cluster = ~ participant.id_in_treatment + group.id_in_subsession,multi0=TRUE)
 
-##################################################################################################
-##################################################################################################
 
-####################################
-#### CREATE TABLE ####
-####################################
+# create table ------------------------------------------------------------
+
 stargazer(reg_bel_lpm, 
           reg_bel_log,
           reg_cond_lpm, 
@@ -247,9 +147,6 @@ stargazer(reg_bel_lpm,
           #model.numbers = FALSE,
           omit = c("player.crt_score","player.sex","player.risk_aversion","player.major","subsession.round_number"),
           add.lines = list(c("Regression", "Linear", "Logit","Linear", "Logit"),
-                             c("Individual Characteristics", "Yes", "Yes","Yes", "Yes"),
                              c("Clustering", "Yes", "Yes","Yes", "Yes")),
           out = here("output/tables","table_reg_B+C.tex"), 
           float=FALSE)
-##############################################
-##############################################
