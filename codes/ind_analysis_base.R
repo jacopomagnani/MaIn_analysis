@@ -1,5 +1,4 @@
-#### ANALYSIS OF INDIVIDUAL BEHAVIOR FROM BASE SESSIONS ####
-
+### ANALYSIS OF INDIVIDUAL BEHAVIOR FROM BASE SESSIONS ###
 
 # preliminaries -----------------------------------------------------------
 
@@ -37,8 +36,9 @@ data_game_raw <- data_game_raw %>%
   mutate(session.code=factor(session.code)) %>%
   select(session.code, participant.id_in_treatment, player.choice,subsession.round_number,subsession.game_name,
          player.match, player.partner_type, player.type, player.signal,group.id_in_treatment)
+min_rond =0
 data_game <- data_game_raw %>%
-  filter(subsession.round_number>20) 
+  filter(subsession.round_number>min_rond) 
 
 # BASELINE REGRESSION -----------------------------------------------------
 
@@ -82,11 +82,6 @@ stargazer(reg_simple_lpm,
                            c("Clustering", "Yes", "Yes")),
           out = here("output/tables","table_reg_BASE_simple.tex"), 
           float=FALSE)
-
-
-
-
-
 
 # INDIVIDUAL CHANGES IN PROPOSAL RATES -------------------------------------------
 #create data
@@ -182,3 +177,82 @@ p=test$p.value
 reject_null=(p<=0.05)
 
 
+
+# INDIVIDUAL DISTRIBUTION OF STRATEGIES --------------------------------------------------------
+
+#create measure of weak-dominance violation
+data_frequencies_s$HhA[is.na(data_frequencies_s$HhA)] = 1
+data_frequencies_s$HhB[is.na(data_frequencies_s$HhB)] = 1
+data_frequencies_s$HlA[is.na(data_frequencies_s$HlA)] = 0
+data_frequencies_s$HlB[is.na(data_frequencies_s$HlB)] = 0
+data_frequencies_s$MhA[is.na(data_frequencies_s$MhA)] = 1
+data_frequencies_s$MhB[is.na(data_frequencies_s$MhB)] = 1
+data_frequencies_s$MlA[is.na(data_frequencies_s$MlA)] = 0
+data_frequencies_s$MlB[is.na(data_frequencies_s$MlB)] = 0
+data_frequencies_s$LhA[is.na(data_frequencies_s$LhA)] = 1
+data_frequencies_s$LhB[is.na(data_frequencies_s$LhB)] = 1
+data_frequencies_s$LmA[is.na(data_frequencies_s$LmA)] = 1
+data_frequencies_s$LmB[is.na(data_frequencies_s$LmB)] = 1
+data_frequencies_s <- data_frequencies_s %>%
+  mutate(WD_mistake = 1*(HhA==0|HhB==0|HlA!=0|HlB!=0|MhA==0|MhB==0|MlA!=0|MlB!=0|LhA==0|LhB==0|LmA==0|LmB==0))
+
+
+# create measure of individual proposal rates
+data_frequencies_s <- data_frequencies_s %>%
+  mutate(HmA_propose = 1*(HmA>=0.5),
+         HmB_propose = 1*(HmB>=0.5),
+         MmA_propose = 1*(MmA>=0.5),
+         MmB_propose = 1*(MmB>=0.5))
+
+#check how many people propose/make mistakes
+sum(data_frequencies_s$HmA_propose)
+sum(data_frequencies_s$HmB_propose)
+sum(data_frequencies_s$MmA_propose)
+sum(data_frequencies_s$MmB_propose)
+sum(data_frequencies_s$WD_mistake)
+
+# Mm players who propose>50% in A are more likely to propose>50% as Mm players in B
+sum(data_frequencies_s$MmA_propose*data_frequencies_s$MmB_propose)/sum(data_frequencies_s$MmA_propose)
+sum((1-data_frequencies_s$MmA_propose)*data_frequencies_s$MmB_propose)/sum(1-data_frequencies_s$MmA_propose)
+
+
+# Mm players who propose>50% in A are more likely to propose>50% as Hm players in B
+sum(data_frequencies_s$MmA_propose*data_frequencies_s$HmB_propose)/sum(data_frequencies_s$MmA_propose)
+sum((1-data_frequencies_s$MmA_propose)*data_frequencies_s$HmB_propose)/sum(1-data_frequencies_s$MmA_propose)
+
+
+# Mm players who propose>50% in A are more likely to propose>50% as Hm players in A
+sum(data_frequencies_s$MmA_propose*data_frequencies_s$HmA_propose)/sum(data_frequencies_s$MmA_propose)
+sum((1-data_frequencies_s$MmA_propose)*data_frequencies_s$HmA_propose)/sum(1-data_frequencies_s$MmA_propose)
+
+
+# Mm players who propose>50% in A are slightly more likely to choose weakly dominated strategies
+sum(data_frequencies_s$MmA_propose*data_frequencies_s$WD_mistake)/sum(data_frequencies_s$MmA_propose)
+sum((1-data_frequencies_s$MmA_propose)*data_frequencies_s$WD_mistake)/sum(1-data_frequencies_s$MmA_propose)
+
+
+#full table
+data_freq=cbind(data_frequencies_s$MmA_propose,
+                1-data_frequencies_s$MmA_propose,
+                data_frequencies_s$MmB_propose,
+                1-data_frequencies_s$MmB_propose,
+                data_frequencies_s$HmA_propose,
+                1-data_frequencies_s$HmA_propose,
+                data_frequencies_s$HmB_propose,
+                1-data_frequencies_s$HmB_propose,
+                data_frequencies_s$WD_mistake,
+                1-data_frequencies_s$WD_mistake)
+num_variables = dim(data_freq)[2]
+output_matrix = matrix(nrow=num_variables, ncol=num_variables)
+for(i in seq(1:num_variables)){
+  for(j in seq(1:num_variables)){
+    output_matrix[i,j]=sum(data_freq[,i]*data_freq[,j])
+    #if((i+1)%/%2>(j+1)%/%2){output_matrix[i,j]="-"}
+  }
+}
+library(xtable)
+x <- xtable(output_matrix)
+print(x, floating=FALSE, tabular.environment="bmatrix", hline.after=NULL, include.rownames=FALSE, include.colnames=FALSE)
+
+#number of subjects who make no mistakes: 3
+sum((1-data_frequencies_s$MmA_propose)*data_frequencies_s$MmB_propose*(1-data_frequencies_s$HmA_propose)*data_frequencies_s$MmB_propose*(1-data_frequencies_s$WD_mistake))
