@@ -1,11 +1,10 @@
 
-##################################
-###  CALLING PROGRAM FOR MLE #####
-##################################
 
-##################################
-### PRELIMINARIES ################
-##################################
+###  CALLING PROGRAM FOR MLE ###
+
+
+# PRELIMINARIES -----------------------------------------------------------
+
 library(tidyverse)
 library(forcats)
 library(bbmle)
@@ -21,12 +20,10 @@ source(here("codes","likelihood_BEL.R"))
 source(here("codes","likelihood_COND.R"))
 source(here("codes","likelihood_joint.R"))
 source(here("codes","likelihood_joint_restricted.R"))
-##################################
-##################################
 
-##################################
-####### PREPARE DATA #############
-##################################
+
+# PREPARE DATA  -----------------------------------------------------------
+
 min_round <- 1
 max_round <- 60
 
@@ -78,11 +75,10 @@ rm(raw_data)
 mle_data = mle_data_BASE %>%
   bind_rows(mle_data_BEL) %>%
   bind_rows(mle_data_COND)
-##################################
 
-##################################
-####### FIXED PARAMETERS #########
-##################################
+
+#  FIXED PARAMETERS  ------------------------------------------------------
+
 M_BASE <- matrix(rep(c(160,80,40),3),nrow = 3,ncol = 3,byrow = TRUE)
 D_BASE <- matrix(c(0.5,0.5,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
 R_BASE_A <- matrix(rep(c(100,75,25),3),nrow = 3,ncol = 3,byrow = FALSE)
@@ -105,25 +101,22 @@ D_COND_B <- matrix(c(0.625,0.375,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TR
 D_COND_C <- matrix(c(0.750,0.250,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
 D_COND_D <- matrix(c(0.875,0.125,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
 D_COND_E <- matrix(c(1.000,0.000,0,0,1,0,0,0.5,0.5),nrow = 3,ncol = 3,byrow = TRUE)
-##################################
-##################################
 
 
-############################################
-####### RUN ESTIMATION FOR BASE ONLY #######
-############################################
+
+# RUN ESTIMATION FOR BASE ONLY --------------------------------------------
+
 mle_BASE <- mle2(minuslogl = likelihood_BASE,
                     start = list(lambda=0.1, chi=0.5),
                     optimizer="nlminb", #NOTE: R will crash with default "optim"
                     data = mle_data,
                     lower=c(lambda=0.01,chi=0.01),
                     upper=c(lambda=0.4,chi=0.99))
-############################################
-############################################
 
-############################################
-####### RUN JOINT ESTIMATION ###############
-############################################
+
+
+# RUN JOINT ESTIMATION ----------------------------------------------------
+
 mle_joint <- mle2(minuslogl = likelihood_joint,
                          start = list(lambda=0.1, chi_BASE=0.5, chi_BEL=0.5),
                          optimizer="nlminb", #NOTE: R will crash with default "optim"
@@ -143,13 +136,12 @@ mle_results_joint_restricted <- mle2(minuslogl = likelihood_joint_restricted,
 NLL_joint_restricted=mle_results_joint_restricted@details$objective
 chistat <- -2*(NLL_joint-NLL_joint_restricted) #chi2 statistic
 pvalue <- 1-pchisq(chistat,df=1)
-############################################
-############################################
 
 
-############################################
-####### OUTPUT TABLE ###############
-############################################
+
+# OUTPUT TABLE  -----------------------------------------------------------
+
+
 dummydata <- data.frame(y=1,lambda=2,chi_BASE=3,chi_BEL=4)
 dummy_reg <- lm(formula = y ~ lambda + chi_BASE + chi_BEL, data = dummydata)
 stargazer(dummy_reg,
@@ -167,6 +159,3 @@ stargazer(dummy_reg,
                            c("Observations", as.character(length(mle_joint@data$treatment)))),
           out = here("output/tables","table_MLE.tex"), 
           float=FALSE)
-############################################
-############################################
-
