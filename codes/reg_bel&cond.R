@@ -45,7 +45,7 @@ data_game_raw <- data_game_raw %>%
   select(session.code, participant.id_in_treatment, player.choice,subsession.round_number,subsession.game_name,
          player.match, player.partner_type, player.type, player.signal,group.id_in_subsession, player.status,
          subsession.p, subsession.adverse)
-min_round=0
+min_round=21
 data_game <- data_game_raw %>%
   filter(subsession.round_number>=min_round) %>%
   filter(player.status==0 & player.signal=="m")
@@ -101,7 +101,7 @@ data_game_raw <- data_game_raw %>%
          player.match, player.partner_type, player.type, player.signal,group.id_in_subsession, player.status,
          subsession.p, subsession.adverse)
 
-min_round=20
+min_round=21
 data_game <- data_game_raw %>%
   filter(subsession.round_number>=min_round) %>%
   filter(player.status==0 & player.signal=="m")
