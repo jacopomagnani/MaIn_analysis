@@ -296,3 +296,35 @@ diff = test_data$mean_choice[test_data$subsession.game_name=="B"]-test_data$mean
 test=wilcox.test(diff, alternative = "greater")
 p=test$p.value
 reject=(p<=0.05)
+
+
+# dynamics ----------------------------------------------------------------
+
+
+data_all_base <- read_csv(here("data","MaIn_data_base_game.csv"))
+min_round <- 0
+max_round <- 60
+data_all_base <- mutate(data_all_base,round_ind = subsession.round_number>=min_round & subsession.round_number<=max_round)
+data_all_base <- data_all_base %>%
+  mutate(player.type=factor(player.type)) %>%
+  mutate(player.type=fct_recode(player.type,
+                                "H"="1",
+                                "M"="2",
+                                "L"="3"))
+data_all_base <- data_all_base %>%
+  mutate(player.signal=factor(player.signal)) %>%
+  mutate(player.signal=fct_recode(player.signal,
+                                  "h"="1",
+                                  "m"="2",
+                                  "l"="3"))
+data_all_base <- data_all_base %>%
+  mutate(subsession.game_name=factor(subsession.game_name))
+
+means <- data_all_base %>%
+  filter(player.type=="M", player.signal=="m", subsession.game_name=="A") %>%
+  group_by(subsession.round_number) %>%
+  summarise(mean_choice = mean(player.choice))
+
+means %>% mutate(late=(subsession.round_number>58)) %>%
+  group_by(late) %>%
+  summarise(block_mean=mean(mean_choice))
