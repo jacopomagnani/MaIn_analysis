@@ -36,7 +36,7 @@ data_game_raw <- data_game_raw %>%
   mutate(session.code=factor(session.code)) %>%
   select(session.code, participant.id_in_treatment, player.choice,subsession.round_number,subsession.game_name,
          player.match, player.partner_type, player.type, player.signal,group.id_in_treatment)
-min_rond =0
+min_rond =21
 data_game <- data_game_raw %>%
   filter(subsession.round_number>min_rond) 
 
@@ -256,3 +256,30 @@ print(x, floating=FALSE, tabular.environment="bmatrix", hline.after=NULL, includ
 
 #number of subjects who make no mistakes: 3
 sum((1-data_frequencies_s$MmA_propose)*data_frequencies_s$MmB_propose*(1-data_frequencies_s$HmA_propose)*data_frequencies_s$MmB_propose*(1-data_frequencies_s$WD_mistake))
+
+#number of subjects who follow heuristics
+
+
+sum((data_frequencies_s$HmA_propose)*(data_frequencies_s$HmB_propose)*(data_frequencies_s$MmA_propose)*(data_frequencies_s$MmB_propose))
+sum((data_frequencies_s$HmA_propose)*(data_frequencies_s$HmB_propose)*(data_frequencies_s$MmA_propose)*(1-data_frequencies_s$MmB_propose))
+sum((data_frequencies_s$HmA_propose)*(data_frequencies_s$HmB_propose)*(1-data_frequencies_s$MmA_propose)*(data_frequencies_s$MmB_propose))
+sum((data_frequencies_s$HmA_propose)*(data_frequencies_s$HmB_propose)*(1-data_frequencies_s$MmA_propose)*(1-data_frequencies_s$MmB_propose))
+
+sum((data_frequencies_s$HmA_propose)*(1-data_frequencies_s$HmB_propose)*(data_frequencies_s$MmA_propose)*(data_frequencies_s$MmB_propose))
+sum((data_frequencies_s$HmA_propose)*(1-data_frequencies_s$HmB_propose)*(data_frequencies_s$MmA_propose)*(1-data_frequencies_s$MmB_propose))
+sum((data_frequencies_s$HmA_propose)*(1-data_frequencies_s$HmB_propose)*(1-data_frequencies_s$MmA_propose)*(data_frequencies_s$MmB_propose))
+sum((data_frequencies_s$HmA_propose)*(1-data_frequencies_s$HmB_propose)*(1-data_frequencies_s$MmA_propose)*(1-data_frequencies_s$MmB_propose))
+
+sum((1-data_frequencies_s$HmA_propose)*(data_frequencies_s$HmB_propose)*(data_frequencies_s$MmA_propose)*(data_frequencies_s$MmB_propose))
+sum((1-data_frequencies_s$HmA_propose)*(data_frequencies_s$HmB_propose)*(data_frequencies_s$MmA_propose)*(1-data_frequencies_s$MmB_propose))
+sum((1-data_frequencies_s$HmA_propose)*(data_frequencies_s$HmB_propose)*(1-data_frequencies_s$MmA_propose)*(data_frequencies_s$MmB_propose))
+sum((1-data_frequencies_s$HmA_propose)*(data_frequencies_s$HmB_propose)*(1-data_frequencies_s$MmA_propose)*(1-data_frequencies_s$MmB_propose))
+
+sum((1-data_frequencies_s$HmA_propose)*(1-data_frequencies_s$HmB_propose)*(data_frequencies_s$MmA_propose)*(data_frequencies_s$MmB_propose))
+sum((1-data_frequencies_s$HmA_propose)*(1-data_frequencies_s$HmB_propose)*(data_frequencies_s$MmA_propose)*(1-data_frequencies_s$MmB_propose))
+sum((1-data_frequencies_s$HmA_propose)*(1-data_frequencies_s$HmB_propose)*(1-data_frequencies_s$MmA_propose)*(data_frequencies_s$MmB_propose))
+sum((1-data_frequencies_s$HmA_propose)*(1-data_frequencies_s$HmB_propose)*(1-data_frequencies_s$MmA_propose)*(1-data_frequencies_s$MmB_propose))
+
+
+  
+  
