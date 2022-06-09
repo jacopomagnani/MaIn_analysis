@@ -24,7 +24,7 @@ source(here("codes","likelihood_joint_restricted.R"))
 
 # PREPARE DATA  -----------------------------------------------------------
 
-min_round <- 1
+min_round <- 21
 max_round <- 60
 
 raw_data<-read_csv(here("data","MaIn_data_base_game.csv"))
