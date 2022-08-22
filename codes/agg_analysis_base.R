@@ -320,11 +320,48 @@ data_all_base <- data_all_base %>%
 data_all_base <- data_all_base %>%
   mutate(subsession.game_name=factor(subsession.game_name))
 
-means <- data_all_base %>%
-  filter(player.type=="M", player.signal=="m", subsession.game_name=="A") %>%
-  group_by(subsession.round_number) %>%
+data_means <- data_all_base %>%
+  filter(player.type=="M", player.signal=="m") %>%
+  group_by(subsession.round_number, subsession.game_name) %>%
   summarise(mean_choice = mean(player.choice))
 
 means %>% mutate(late=(subsession.round_number>58)) %>%
   group_by(late) %>%
   summarise(block_mean=mean(mean_choice))
+
+
+scale <- 1.6
+plot_data <- data_means 
+f <- ggplot(data=plot_data, aes(x=subsession.round_number,
+                                y=mean_choice,
+                                colour=subsession.game_name, 
+                                group=subsession.game_name, 
+                                linetype=subsession.game_name,
+                                shape=subsession.game_name)) +
+  geom_line(size=1)+
+  geom_point(size=2) +
+  scale_color_discrete(name="Game") +
+  scale_linetype_discrete(name="Game") +
+  scale_shape_discrete(name="Game") +
+  ylab("Proposal rate of (M,m) types") +
+  xlab("Round") +
+  ylim(0,1) +
+  theme(axis.title.y = element_text(size=16*scale)) +
+  theme(axis.title.x = element_text(size=16*scale)) +
+  theme(axis.text.x  = element_text(size=16*scale)) +
+  theme(axis.text.y  = element_text(size=16*scale)) +
+  theme(legend.text = element_text(size = 16*scale),
+        legend.title = element_text(size=16*scale)) +
+  theme(
+    panel.background = element_rect(fill = "transparent") # bg of the panel
+    , plot.background = element_rect(fill = "transparent", color = NA) # bg of the plot
+    , panel.grid.major = element_line(colour = "grey") # get rid of major grid
+    , panel.grid.minor = element_line(colour = "grey") # get rid of minor grid
+    , legend.background = element_rect(fill = "transparent") # get rid of legend bg
+    , legend.box.background = element_rect(fill = "transparent", color = NA) # get rid of legend panel bg
+    , legend.key = element_rect(fill = "transparent", color = NA)
+    , legend.position = "bottom"
+    , legend.margin = margin(20,0.5,0.5,0.5)
+  )
+ggsave(f, filename = "TimeSeries.png",  bg = "transparent", path = here("output/figures"))
+
