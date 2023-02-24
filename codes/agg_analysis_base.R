@@ -57,7 +57,7 @@ for(i in c(1,2)){
     geom_errorbar(aes(ymin=mean-2*sd, ymax=mean+2*sd), width=.2,
                   position=position_dodge(0.9)) +
     scale_fill_manual(name  ="Signal    ",
-                      values=c( "h"="red", "m"="yellow","l"="blue"),
+                      values=c( "h"="grey", "m"="white","l"="black"),
                       labels=c(" h  ", " m  ", " l ")) +
     ylab("Proposal rate") +
     xlab("Quality") +
@@ -131,116 +131,114 @@ f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name
 ggsave(f, filename = "bars_AvsB.png",  bg = "transparent", path = here("output/figures"))
 
 
-# test if proposal rates are > or < than 50% ------------------------------
-#dominant strategies
-
+# test if proposal rates of dominant strategies are =100% ------------------------------
 #HhA
 test_data <- data_groups %>%
   filter(player.signal=="h" & player.type=="H" & subsession.game_name=="A") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "greater" )
+diff = test_data$mean_choice-1
+test=wilcox.test(diff, alternative = "less" )
 p=test$p.value
 reject=(p<=0.05)
 #HhB
 test_data <- data_groups %>%
   filter(player.signal=="h" & player.type=="H" & subsession.game_name=="B") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "greater" )
+diff = test_data$mean_choice-1
+test=wilcox.test(diff, alternative = "less" )
 p=test$p.value
 reject=(p<=0.05)
-
 #MhA
 test_data <- data_groups %>%
   filter(player.signal=="h" & player.type=="M" & subsession.game_name=="A") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "greater" )
+diff = test_data$mean_choice-1
+test=wilcox.test(diff, alternative = "less" )
 p=test$p.value
 reject=(p<=0.05)
 #MhB
 test_data <- data_groups %>%
   filter(player.signal=="h" & player.type=="M" & subsession.game_name=="B") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "greater" )
+diff = test_data$mean_choice-1
+test=wilcox.test(diff, alternative = "less" )
 p=test$p.value
 reject=(p<=0.05)
-
 #LhA
 test_data <- data_groups %>%
   filter(player.signal=="h" & player.type=="L" & subsession.game_name=="A") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "greater" )
+diff = test_data$mean_choice-1
+test=wilcox.test(diff, alternative = "less" )
 p=test$p.value
 reject=(p<=0.05)
 #LhB
 test_data <- data_groups %>%
   filter(player.signal=="h" & player.type=="L" & subsession.game_name=="B") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "greater" )
+diff = test_data$mean_choice-1
+test=wilcox.test(diff, alternative = "less" )
 p=test$p.value
 reject=(p<=0.05)
-
 #LmA
 test_data <- data_groups %>%
   filter(player.signal=="m" & player.type=="L" & subsession.game_name=="A") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "greater" )
+diff = test_data$mean_choice-1
+test=wilcox.test(diff, alternative = "less" )
 p=test$p.value
 reject=(p<=0.05)
 #LmB
 test_data <- data_groups %>%
   filter(player.signal=="m" & player.type=="L" & subsession.game_name=="B") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "greater" )
+diff = test_data$mean_choice-1
+test=wilcox.test(diff, alternative = "less" )
 p=test$p.value
 reject=(p<=0.05)
-
 #LlA
 test_data <- data_groups %>%
   filter(player.signal=="l" & player.type=="L" & subsession.game_name=="A") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "greater" )
+diff = test_data$mean_choice-1
+test=wilcox.test(diff, alternative = "less" )
 p=test$p.value
 reject=(p<=0.05)
 #LlB
 test_data <- data_groups %>%
   filter(player.signal=="l" & player.type=="L" & subsession.game_name=="B") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "greater" )
+diff = test_data$mean_choice-1
+test=wilcox.test(diff, alternative = "less" )
 p=test$p.value
 reject=(p<=0.05)
 
-#dominated strategies
+
+# test if proportion of dominated strategies =0 ---------------------------
+
 #HlA
 test_data <- data_groups %>%
   filter(player.signal=="l" & player.type=="H" & subsession.game_name=="A") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "less" )
+diff = test_data$mean_choice-0
+test=wilcox.test(diff, alternative = "greater" )
 p=test$p.value
 reject=(p<=0.05)
 #HlB
 test_data <- data_groups %>%
   filter(player.signal=="l" & player.type=="H" & subsession.game_name=="B") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "less" )
+diff = test_data$mean_choice-0
+test=wilcox.test(diff, alternative = "greater" )
 p=test$p.value
 reject=(p<=0.05)
 
 #MlA
 test_data <- data_groups %>%
   filter(player.signal=="l" & player.type=="M" & subsession.game_name=="A") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "less" )
+diff = test_data$mean_choice-0
+test=wilcox.test(diff, alternative = "greater" )
 p=test$p.value
 reject=(p<=0.05)
 #MlB
 test_data <- data_groups %>%
   filter(player.signal=="l" & player.type=="M" & subsession.game_name=="B") 
-diff = test_data$mean_choice-0.5
-test=wilcox.test(diff, alternative = "less" )
+diff = test_data$mean_choice-0
+test=wilcox.test(diff, alternative = "greater" )
 p=test$p.value
 reject=(p<=0.05)
 
-#other strategies
+
+# test if proportions of empirical best responses are >=< 0.5 -------------
+
 #HmA
 test_data <- data_groups %>%
   filter(player.signal=="m" & player.type=="H" & subsession.game_name=="A") 
