@@ -95,18 +95,17 @@ scale <- 1.2
 
 f <- ggplot(data = data_plot, aes(x=adverse, 
                              y=mean, 
-                             colour=treatment, 
-                             group=treatment, 
-                             linetype=treatment,
-                             shape=treatment
+                             fill=treatment,
+                             group=treatment
                             )) +
-  geom_point(size=3) +
-  geom_line(size=1) +
+  geom_bar(stat="identity", color="black", width=0.2,
+           position=position_dodge()) +
   geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.1,
-                position=position_dodge(0)) +
-  scale_color_discrete(name="Treatment") +
-  scale_linetype_discrete(name="Treatment") +
-  scale_shape_discrete(name="Treatment") +
+                position=position_dodge(0.2)) +
+  scale_fill_manual(name="Treatment",
+                     values=c( "BEL"="grey", "COND"="white")) +
+  scale_x_continuous(name =TeX("Adverse selection $(1-p)$"), 
+                   breaks=c(0,0.25,0.5,0.75,1)) +
   theme(legend.text = element_text(size = 16*scale), 
         legend.title = element_text(size = 16*scale)) +
   ylab("Proposal rate") +
