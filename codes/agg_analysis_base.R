@@ -131,7 +131,7 @@ f <- ggplot(data=plot_data, aes(x=player.type, y=mean, fill=subsession.game_name
 ggsave(f, filename = "bars_AvsB.png",  bg = "transparent", path = here("output/figures"))
 
 
-# test if proposal rates of dominant strategies are =100% ------------------------------
+# test if proportion of dominant strategies =100% ------------------------------
 #HhA
 test_data <- data_groups %>%
   filter(player.signal=="h" & player.type=="H" & subsession.game_name=="A") 
@@ -237,7 +237,7 @@ p=test$p.value
 reject=(p<=0.05)
 
 
-# test if proportions of empirical best responses are >=< 0.5 -------------
+# test if proportion of empirical best responses are >=< 0.5 -------------
 
 #HmA
 test_data <- data_groups %>%
