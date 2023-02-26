@@ -36,9 +36,9 @@ data_game_raw <- data_game_raw %>%
   mutate(session.code=factor(session.code)) %>%
   select(session.code, participant.id_in_treatment, player.choice,subsession.round_number,subsession.game_name,
          player.match, player.partner_type, player.type, player.signal,group.id_in_treatment)
-min_rond =21
+min_round =21
 data_game <- data_game_raw %>%
-  filter(subsession.round_number>min_rond) 
+  filter(subsession.round_number>=min_round) 
 
 # BASELINE REGRESSION -----------------------------------------------------
 
@@ -71,7 +71,7 @@ coeftest(reg_simple_logit, vcov = vcovCL, cluster = ~ participant.id_in_treatmen
 coeftest(reg_simple_logit, vcov = vcovCL, cluster = ~ participant.id_in_treatment, multi0=TRUE)
 coeftest(reg_simple_logit, vcov = vcovCL, cluster = ~group.id_in_treatment, multi0=TRUE)
 
-stargazer(reg_simple_lpm, 
+tablej = stargazer(reg_simple_lpm, 
           reg_simple_logit,
           se = list(results_simple_lp[,"Std. Error"], results_simple_logit[,"Std. Error"]),
           p = list(results_simple_lp[,"Pr(>|z|)"], results_simple_logit[,"Pr(>|z|)"]),
@@ -82,6 +82,7 @@ stargazer(reg_simple_lpm,
                            c("Clustering", "Yes", "Yes")),
           out = here("output/tables","table_reg_BASE_simple.tex"), 
           float=FALSE)
+
 
 # INDIVIDUAL CHANGES IN PROPOSAL RATES -------------------------------------------
 #create data
